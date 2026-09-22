@@ -1,5 +1,7 @@
 # diffmate
 
+**[See what it looks like →](https://chaeeun037.github.io/diffmate/)**
+
 Leave **private notes** on a GitHub pull request diff, and have an **AI agent answer them in place**.
 
 Nothing is posted to GitHub. Notes live on your machine only — nobody else sees them, even on the same PR.
