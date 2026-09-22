@@ -17,7 +17,8 @@
   --dm-danger: #B53333;
   --dm-radius: 12px;
 }
-[data-color-mode='dark'], [data-dark-theme] .dm-dark, html[data-color-mode='dark'] {
+/* 다크 토큰. 아래 미디어 쿼리 블록과 값이 같아야 한다 — 한쪽만 고치면 시스템 동기화에서 어긋난다 */
+html[data-color-mode='dark'] {
   --dm-accent: #D97757;
   --dm-accent-hover: #C6613F;
   --dm-accent-press: #B2542F;
@@ -30,6 +31,25 @@
   --dm-strong: #F8F8F7;
   --dm-muted: #87867F;
   --dm-danger: #D96B6B;
+}
+
+/* GitHub 의 "Sync with system" 은 data-color-mode="auto" 로 두고 OS 설정으로 다크를 그린다.
+   위 선택자만 두면 이때 밝은 토큰이 남아 어두운 배경에 어두운 글자가 된다 (#1) */
+@media (prefers-color-scheme: dark) {
+  html[data-color-mode='auto'] {
+    --dm-accent: #D97757;
+    --dm-accent-hover: #C6613F;
+    --dm-accent-press: #B2542F;
+    --dm-accent-soft: rgba(217, 119, 87, 0.14);
+    --dm-card-bg: #141413;
+    --dm-card-band: #1F1E1D;
+    --dm-canvas: #1F1E1D;
+    --dm-card-border: #30302E;
+    --dm-card-fg: rgba(248, 248, 247, 0.75);
+    --dm-strong: #F8F8F7;
+    --dm-muted: #87867F;
+    --dm-danger: #D96B6B;
+  }
 }
 
 /* ── 줄 옆 버튼 ────────────────────────────────────────── */
