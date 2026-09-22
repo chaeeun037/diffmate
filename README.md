@@ -69,7 +69,19 @@ echo '{
 }' | node cli/notes.mjs summarize <owner/repo> <pr>
 ```
 
-How to write those summaries is a discipline of its own — see [docs/ko/AGENTS.md](docs/ko/AGENTS.md) (Korean).
+How to write those summaries is a discipline of its own — see the skill below.
+
+## Use with Claude Code
+
+A ready-made skill lives in this repo. Copy it where Claude Code looks for skills:
+
+```bash
+cp -r skill/diffmate ~/.claude/skills/        # English
+cp -r skill/ko/diffmate ~/.claude/skills/     # Korean
+```
+
+Then set `DIFFMATE` to your checkout inside the skill, and ask your agent to
+"fill in the file summaries" after opening a PR, or "answer my notes" while reviewing.
 
 ## Where notes live
 
@@ -95,7 +107,7 @@ When it cannot be found, it is not dropped — it surfaces as an "orphan note" a
 ## Docs
 
 - [Korean README](docs/ko/README.md)
-- [Agent guide](docs/ko/AGENTS.md) — how the agent writes summaries and answers (Korean)
+- [Agent skill](skill/diffmate/SKILL.md) — how the agent writes summaries and answers
 - [Design notes](docs/ko/DESIGN.md) — structure and the reasoning behind it (Korean)
 
 ## License

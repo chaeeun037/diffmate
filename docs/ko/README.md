@@ -67,7 +67,18 @@ echo '{
 }' | node cli/notes.mjs summarize <owner/repo> <pr>
 ```
 
-요약을 어떻게 쓰는지는 [AGENTS.md](AGENTS.md)에 규칙으로 정리해뒀다.
+요약을 어떻게 쓰는지는 [스킬](../../skill/ko/diffmate/SKILL.md)에 규칙으로 정리해뒀다.
+
+## Claude Code 에서 쓰기
+
+이 레포에 스킬이 들어 있다. Claude Code 가 스킬을 찾는 자리로 복사한다.
+
+```bash
+cp -r skill/ko/diffmate ~/.claude/skills/
+```
+
+스킬 안의 `DIFFMATE` 를 클론 경로로 맞춘 뒤, PR 을 올리고 "파일 요약 채워줘",
+검수하면서 "메모 답변 달아줘" 라고 하면 된다.
 
 ## 저장되는 것
 
