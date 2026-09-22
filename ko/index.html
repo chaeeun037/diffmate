@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" data-color-mode="light">
+<html lang="ko" data-color-mode="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>diffmate</title>
-<meta name="description" content="Private notes on GitHub PR diffs, answered in place by an AI agent.">
-<link rel="stylesheet" href="extension/content.css">
+<meta name="description" content="GitHub PR diff 위에 나만 보는 메모를 달고, AI 에이전트가 같은 자리에 답한다.">
+<link rel="stylesheet" href="../extension/content.css">
 <style>
   :root {
     --page-bg: #FAF9F5;
@@ -93,16 +93,16 @@
 
 <header>
   <h1>diffmate</h1>
-  <p class="tag">Leave private notes on a GitHub pull request diff, and have an AI agent answer them in place.</p>
-  <p class="sub">Nothing is posted to GitHub. Notes live on your machine only.</p>
+  <p class="tag">GitHub PR diff 위에 나만 보는 메모를 달면, AI 에이전트가 같은 자리에 답한다.</p>
+  <p class="sub">GitHub에는 아무것도 올라가지 않는다. 메모는 내 컴퓨터에만 있다.</p>
   <div class="links">
     <a class="btn" href="https://github.com/chaeeun037/diffmate">GitHub</a>
-    <a class="btn ghost" href="ko/">한국어</a>
+    <a class="btn ghost" href="../">English</a>
   </div>
 </header>
 
-<h2>What it looks like</h2>
-<p>Everything in clay below is drawn by the extension. The diff underneath is GitHub, untouched.</p>
+<h2>어떻게 보이나</h2>
+<p>아래에서 주황빛이 도는 것은 전부 확장이 그린 것이다. 그 아래 diff는 GitHub 그대로다.</p>
 
 <div class="file">
   <div class="file-head">▾ src/lib/retryFetch.ts</div>
@@ -110,8 +110,8 @@
     <tr class="note-row"><td colspan="3" style="padding:0">
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-high">● high</span>
-        <span>Retry wrapper every API call goes through. If the stop condition is wrong, a failed request repeats until the tab is closed.</span>
+        <span class="dm-risk dm-risk-high">● 중요</span>
+        <span>모든 API 요청이 거쳐 가는 재시도 래퍼. 멈추는 조건이 틀리면 실패한 요청이 탭을 닫을 때까지 반복된다.</span>
       </div>
     </td></tr>
     <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
@@ -122,15 +122,15 @@
       <div class="dm-card dm-inline" style="max-width:520px">
         <div class="dm-card-head">
           <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-          <span class="dm-kind">question</span><span>L14</span>
+          <span class="dm-kind">질문</span><span>L14</span>
           <span class="dm-spacer"></span>
-          <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
+          <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
         </div>
-        <div class="dm-body">Why a while loop instead of recursion? Doesn't this block the caller?</div>
-        <div class="dm-answer">It does not block — every attempt awaits, so the loop yields between tries. Recursion would grow the stack by one frame per retry, and the stack trace on failure would bury the original error.</div>
-        <div class="dm-reply-mine">Got it. So MAX_ATTEMPTS is the only thing stopping it?</div>
-        <div class="dm-answer">Yes, plus the abort signal passed in <code>init</code>. If neither is set, the loop is bounded only by MAX_ATTEMPTS.</div>
-        <div class="dm-actions dm-foot"><button class="dm-btn" type="button">reply</button></div>
+        <div class="dm-body">재귀 말고 반복문을 쓴 이유가 뭐야? 이러면 호출한 쪽이 멈춰 있는 거 아냐?</div>
+        <div class="dm-answer">안 멈춘다. 시도마다 기다리기 때문에 그 사이에 다른 일이 돈다. 재귀로 하면 재시도 한 번에 호출 기록이 한 겹씩 쌓여서, 실패했을 때 원래 오류가 그 밑에 묻힌다.</div>
+        <div class="dm-reply-mine">알겠음. 그럼 멈추게 하는 건 최대 시도 횟수뿐이야?</div>
+        <div class="dm-answer">그것과 호출할 때 넘기는 취소 신호 둘이다. 둘 다 없으면 최대 시도 횟수만 남는다.</div>
+        <div class="dm-actions dm-foot"><button class="dm-btn" type="button">답글</button></div>
       </div>
     </td></tr>
     <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
@@ -139,23 +139,23 @@
     <tr><td class="num">13</td><td class="num">18</td><td class="code">  }</td></tr>
   </table>
 </div>
-<p class="caption">The label above the file is written by the agent before you start reading. The card is a thread: you ask, the agent answers, you push back.</p>
+<p class="caption">파일 위 한 줄은 읽기 시작하기 전에 에이전트가 써 둔 것이다. 카드는 대화다 — 묻고, 답이 오고, 다시 되묻는다.</p>
 
-<h2>How it works</h2>
+<h2>어떻게 도나</h2>
 <ol class="steps">
-  <li><b>The agent goes first.</b> Right after opening a PR it writes one line per file — not what changed, but what breaks if it is wrong.</li>
-  <li><b>You read the diff and ask.</b> Hover a line, click the button, type. Notes are saved to a JSON file on your machine.</li>
-  <li><b>The agent answers in place.</b> Answers land on the same line. Follow-ups stack on the same card, so the thread stays where the code is.</li>
+  <li><b>에이전트가 먼저 쓴다.</b> PR을 올린 직후 파일마다 한 줄을 채운다. 무엇이 바뀌었는지가 아니라, 틀렸을 때 무엇이 깨지는지를 쓴다.</li>
+  <li><b>읽다가 묻는다.</b> 줄에 마우스를 올리면 버튼이 뜬다. 누르고 쓰면 내 컴퓨터의 JSON 파일에 저장된다.</li>
+  <li><b>같은 자리에 답이 온다.</b> 되물으면 같은 카드에 쌓인다. 대화가 코드 옆을 떠나지 않는다.</li>
 </ol>
 
-<h2>Install</h2>
+<h2>설치</h2>
 <pre class="sh">git clone https://github.com/chaeeun037/diffmate.git
 cd diffmate
-npm start          # local daemon on 127.0.0.1:7777</pre>
-<p class="caption">Then in Chrome: <code>chrome://extensions</code> → Developer mode → <b>Load unpacked</b> → pick <code>extension/</code>. Node 18+, no dependencies.</p>
+npm start          # 로컬 데몬 127.0.0.1:7777</pre>
+<p class="caption">그다음 크롬에서 <code>chrome://extensions</code> → 개발자 모드 → <b>압축해제된 확장 프로그램을 로드</b> → <code>extension/</code> 선택. Node 18 이상이면 되고 의존성은 없다.</p>
 
 <footer>
-  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · Issues in Korean or English are both welcome.
+  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · 이슈는 한국어로 남겨도 된다.
 </footer>
 
 </div>
