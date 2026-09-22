@@ -1,9 +1,10 @@
 {
   "name": "diffmate",
   "version": "0.1.0",
-  "description": "GitHub PR diff 위에 자기만 보는 메모를 달고, AI 에이전트가 같은 자리에 답하게 하는 크롬 확장",
+  "description": "Private notes on GitHub PR diffs, answered in place by an AI agent",
   "type": "module",
   "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/chaeeun037/diffmate.git" },
   "bin": { "diffmate": "cli/notes.mjs" },
   "scripts": {
     "start": "node daemon/server.mjs",

@@ -1,75 +1,75 @@
 # diffmate
 
-GitHub PR의 `Files changed` 화면 위에 **자기만 보는 메모**를 달고, AI 에이전트가 **같은 자리에 답하게** 하는 크롬 확장.
+Leave **private notes** on a GitHub pull request diff, and have an **AI agent answer them in place**.
 
-GitHub에는 아무것도 올라가지 않는다. 메모는 전부 내 컴퓨터에만 있고, 다른 사람이 같은 PR을 열어도 아무것도 안 보인다.
+Nothing is posted to GitHub. Notes live on your machine only — nobody else sees them, even on the same PR.
 
 ```
-  ⓪ 에이전트가 파일별 한 줄 요약을 채운다
+  ⓪ the agent fills in a one-line summary per file
         │
         ▼
-  [GitHub PR · Files changed]     파일 이름 아래: 이 파일을 왜 봐야 하는지
-        │  ① 줄 옆 버튼 → 질문 작성
+  [GitHub PR · Files changed]   under each filename: why this file is worth looking at
+        │  ① click the gutter button → write a question
         ▼
-   [크롬 확장]  ──②──▶  로컬 데몬  ──▶  ~/.diffmate/<owner>__<repo>/<pr>.json
-        ▲                                   │ ▲
-        │ ④ 답이 같은 자리에 뜬다            ▼ │ ③ 에이전트에게 "답변 달아줘"
-        └───────────────────────  [AI 에이전트] ─┘
+   [extension]  ──②──▶  local daemon  ──▶  ~/.diffmate/<owner>__<repo>/<pr>.json
+        ▲                                      │ ▲
+        │ ④ the answer appears in place        ▼ │ ③ ask your agent to answer
+        └──────────────────────────  [AI agent] ─┘
 
-  ①~④는 여러 번 돈다. 답을 보고 또 물으면 같은 카드에 쌓인다.
+  ①~④ repeat. Follow-ups stack on the same card.
 ```
 
-## 왜 만들었나
+## Why
 
-AI가 쓴 코드를 사람이 검수할 때, diff만 봐서는 **어느 파일을 왜 봐야 하는지**가 안 보인다.
-그렇다고 PR 본문에 길게 쓰면 정작 코드를 볼 때는 화면 위쪽 멀리 있어서 아무도 안 읽는다.
+Reviewing AI-written code from a diff alone is hard: you cannot tell **which file matters and why**.
+Writing it up in the PR description does not help either — by the time you are reading code, that text is far above the fold.
 
-그래서 설명을 diff 옆으로 가져왔다. 그리고 방향을 뒤집었다 — 에이전트가 설명을 미는 게 아니라,
-**모르는 사람이 묻고 아는 쪽이 답한다.** 무엇을 모르는지는 읽는 사람만 안다.
+So the explanation moves next to the diff. And the direction flips: instead of the agent pushing context,
+**the person who does not know asks, and the one who knows answers.** Only the reader knows what they are missing.
 
-## 설치
+## Install
 
 ```bash
-git clone https://github.com/<you>/diffmate.git
+git clone https://github.com/chaeeun037/diffmate.git
 cd diffmate
-npm start          # 로컬 데몬 (127.0.0.1:7777)
+npm start          # local daemon on 127.0.0.1:7777
 ```
 
-크롬에서 `chrome://extensions` → 개발자 모드 켜기 → **압축해제된 확장 프로그램을 로드** → `extension/` 폴더 선택.
+Then in Chrome: `chrome://extensions` → enable Developer mode → **Load unpacked** → pick `extension/`.
 
-Node 18 이상이면 되고, 의존성은 없다.
+Node 18+. No dependencies.
 
-## 쓰는 법
+## Use
 
-**메모 달기** — diff 줄에 마우스를 올리면 줄번호 왼쪽에 버튼이 뜬다. 누르고 쓰면 된다.
+**Leave a note** — hover a diff line; a button appears left of the line number. Click and type.
 
-- `⌘Enter` 저장 · `Esc` 취소
-- 종류 세 가지: `질문`(답만) · `요청`(코드를 고쳐달라) · `메모`(에이전트가 안 건드림)
-- 파일 이름 아래 요약 배너의 로고를 누르면 **줄에 묶이지 않는 파일 단위 메모**가 된다
+- `⌘Enter` to save, `Esc` to cancel
+- Three kinds: `question` (answer only), `request` (change the code), `memo` (agent leaves it alone)
+- Clicking the logo in a file's summary banner creates a **file-level note** that is not tied to any line
 
-**답 받기** — 에이전트에게 "메모 답변 달아줘"라고 한다. 아래 CLI로 읽고 쓴다.
+**Get answers** — ask your agent to answer the notes. It reads and writes through the CLI:
 
 ```bash
-node cli/notes.mjs list                          # 어느 PR에 미답변이 남았나
-node cli/notes.mjs list <owner/repo> <pr>        # 메모 전문 (JSON)
-echo '답변' | node cli/notes.mjs answer <owner/repo> <pr> <noteId>
-echo '답글' | node cli/notes.mjs reply  <owner/repo> <pr> <noteId>
+node cli/notes.mjs list                          # which PRs have unanswered notes
+node cli/notes.mjs list <owner/repo> <pr>        # full notes as JSON
+echo 'answer'   | node cli/notes.mjs answer <owner/repo> <pr> <noteId>
+echo 'follow-up'| node cli/notes.mjs reply  <owner/repo> <pr> <noteId>
 ```
 
-**파일 요약 채우기** — 작업이 끝난 직후 에이전트가 채운다. 검수자가 diff를 열었을 때 첫 화면이 된다.
+**Fill file summaries** — right after opening a PR, so the reviewer sees them first:
 
 ```bash
 echo '{
   "src/pages/_document.tsx": {
-    "summary": "모든 페이지 HTML에 심는 측정 시작 신호. 첫 줄 경로 검사가 틀리면 전 페이지에서 로그가 나간다.",
+    "summary": "Inline beacon injected into every page. If the path check on the first line is wrong, every page fires the log.",
     "risk": "high", "order": 1
   }
 }' | node cli/notes.mjs summarize <owner/repo> <pr>
 ```
 
-요약을 어떻게 쓰는지는 [AGENTS.md](AGENTS.md)에 규칙으로 정리해뒀다.
+How to write those summaries is a discipline of its own — see [docs/ko/AGENTS.md](docs/ko/AGENTS.md) (Korean).
 
-## 저장되는 것
+## Where notes live
 
 ```
 ~/.diffmate/
@@ -77,23 +77,29 @@ echo '{
     <pr>.json
 ```
 
-레포별·PR별로 갈린다. 한 파일 안에 파일 요약(`files`)과 메모(`notes`)가 같이 들어간다.
-메모는 `줄 번호 + 그 줄 내용의 해시`로 고정돼서, 새 커밋으로 줄이 밀려도 제자리를 찾는다.
-못 찾으면 사라지지 않고 "떠돌이 메모"로 화면 위에 모인다.
+One file per PR, holding both the file summaries (`files`) and the notes (`notes`).
+A note is anchored by **line number plus a hash of that line's content**, so it follows the code when a new commit shifts it.
+When it cannot be found, it is not dropped — it surfaces as an "orphan note" at the top of the page.
 
-## 알아둘 것
+## Good to know
 
-- **통합 보기(unified) 기준**이다. 나란히 보기(split)는 아직 안 맞춘다.
-- GitHub의 `Files changed` DOM 위에 얹히므로 **화면이 개편되면 깨질 수 있다.** 버튼이 안 뜨면
-  콘솔의 `[diffmate]` 로그를 보면 어디서 끊겼는지 나온다.
-- 파일이 접혀 있으면(`Viewed` 체크) 그 파일의 diff 줄이 화면에 없다. 메모는 사라지지 않고
-  파일 이름 아래에 펼쳐진다.
-- 같은 PR을 두 탭에서 열고 동시에 쓰면 마지막 쓰기가 이긴다.
+- Built for **unified diff view**. Split view is not handled yet.
+- It rides on GitHub's `Files changed` DOM, so **a redesign can break it.** If buttons stop appearing,
+  the `[diffmate]` console logs say where it lost track.
+- A collapsed file (marked `Viewed`) has no diff lines on the page. Its notes are not hidden —
+  they expand under the filename instead.
+- Two tabs on the same PR: last write wins.
 
-## 설계
+## Docs
 
-자세한 구조와 그렇게 만든 이유는 [docs/DESIGN.md](docs/DESIGN.md)에 있다.
+- [Korean README](docs/ko/README.md)
+- [Agent guide](docs/ko/AGENTS.md) — how the agent writes summaries and answers (Korean)
+- [Design notes](docs/ko/DESIGN.md) — structure and the reasoning behind it (Korean)
 
-## 라이선스
+## License
 
 MIT
+
+---
+
+Issues in Korean or English are both welcome.
