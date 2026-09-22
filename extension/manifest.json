@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "diffmate",
+  "version": "0.1.0",
+  "description": "GitHub PR diff 위에 클로드에게 남기는 로컬 메모. GitHub에는 아무것도 올라가지 않는다.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*/*/pull/*/changes*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

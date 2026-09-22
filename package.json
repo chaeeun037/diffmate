@@ -1,0 +1,14 @@
+{
+  "name": "diffmate",
+  "version": "0.1.0",
+  "description": "GitHub PR diff 위에 자기만 보는 메모를 달고, AI 에이전트가 같은 자리에 답하게 하는 크롬 확장",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "diffmate": "cli/notes.mjs" },
+  "scripts": {
+    "start": "node daemon/server.mjs",
+    "check": "bash scripts/check.sh"
+  },
+  "engines": { "node": ">=18" },
+  "keywords": ["github", "code-review", "chrome-extension", "pull-request", "ai-agent"]
+}

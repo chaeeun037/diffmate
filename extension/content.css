@@ -1,0 +1,342 @@
+/* 전부 dm- 접두로 격리한다. GitHub 클래스를 재사용하면 개편 때 같이 깨진다. */
+:root {
+  /* Clay — 브랜드 액센트. 텍스트·보더용 */
+  --dm-accent: #D97757;
+  --dm-accent-hover: #C6613F;
+  --dm-accent-press: #B2542F;
+  --dm-accent-soft: rgba(217, 119, 87, 0.08);
+  /* 서피스 — 크림 계열 */
+  --dm-card-bg: #FFFFFF;
+  --dm-card-band: #F0EFE6;
+  --dm-canvas: #FAF9F5;
+  --dm-card-border: #E7E6E1;
+  /* 잉크 — 웜 뉴트럴. 쿨 블루그레이를 쓰지 않는다 */
+  --dm-card-fg: #3D3D3A;
+  --dm-strong: #141413;
+  --dm-muted: #73726C;
+  --dm-danger: #B53333;
+  --dm-radius: 12px;
+}
+[data-color-mode='dark'], [data-dark-theme] .dm-dark, html[data-color-mode='dark'] {
+  --dm-accent: #D97757;
+  --dm-accent-hover: #C6613F;
+  --dm-accent-press: #B2542F;
+  --dm-accent-soft: rgba(217, 119, 87, 0.14);
+  --dm-card-bg: #141413;
+  --dm-card-band: #1F1E1D;
+  --dm-canvas: #1F1E1D;
+  --dm-card-border: #30302E;
+  --dm-card-fg: rgba(248, 248, 247, 0.75);
+  --dm-strong: #F8F8F7;
+  --dm-muted: #87867F;
+  --dm-danger: #D96B6B;
+}
+
+/* ── 줄 옆 버튼 ────────────────────────────────────────── */
+.dm-line-btn {
+  position: fixed;
+  z-index: 60;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.08s ease, background 0.08s ease;
+}
+.dm-line-btn:hover { background: var(--dm-accent-soft); }
+.dm-line-btn.dm-visible { opacity: 0.55; }
+.dm-line-btn.dm-visible:hover { opacity: 1; }
+.dm-line-btn.dm-has-note { opacity: 1; }
+.dm-line-btn svg { display: block; width: 18px; height: 18px; margin: 2px; color: var(--dm-accent); }
+.dm-card-head svg, .dm-file-summary svg, .dm-status svg { color: var(--dm-accent); }
+.dm-composer .dm-card-head svg { color: var(--dm-accent); }
+
+/* ── 오른쪽 여백 레일 ───────────────────────────────────── */
+.dm-rail { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 55; pointer-events: none; }
+.dm-card {
+  position: fixed;
+  width: 300px;
+  pointer-events: auto;
+  background: var(--dm-card-bg);
+  color: var(--dm-card-fg);
+  border: 1px solid var(--dm-card-border);
+  border-left: 3px solid var(--dm-accent);
+  border-radius: var(--dm-radius);
+  box-shadow: 0 1px 3px rgba(20, 20, 19, 0.08);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+.dm-card.dm-inline { position: static; width: auto; max-width: 420px; margin: 4px 0; }
+.dm-connector {
+  position: fixed;
+  height: 0;
+  border-top: 1px dashed var(--dm-accent);
+  opacity: 0.5;
+  z-index: 54;
+  pointer-events: none;
+}
+
+.dm-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  white-space: nowrap;
+  background: var(--dm-card-band);
+  border-bottom: 1px solid var(--dm-card-border);
+  font-size: 12px;
+  color: var(--dm-muted);
+}
+.dm-kind { font-weight: 600; color: var(--dm-accent); }
+.dm-card-head .dm-spacer { flex: 1; }
+.dm-card-head button {
+  border: 0;
+  background: transparent;
+  color: var(--dm-muted);
+  cursor: pointer;
+  padding: 0 3px;
+  font-size: 12px;
+}
+.dm-card-head button:hover { color: var(--dm-card-fg); }
+
+.dm-body { padding: 9px 11px; white-space: pre-wrap; word-break: break-word; }
+.dm-body::before {
+  content: '나';
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dm-muted);
+}
+/* 한 줄로 접힌 상태에서는 이름을 빼서 본문만 남긴다 */
+.dm-card.dm-resolved:not(.dm-expanded) .dm-body::before { display: none; }
+.dm-answer {
+  padding: 9px 11px;
+  border-top: 1px solid var(--dm-card-border);
+  background: var(--dm-canvas);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.dm-answer::before {
+  content: '클로드';
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dm-accent);
+}
+.dm-pending { padding: 7px 11px; border-top: 1px solid var(--dm-card-border); color: var(--dm-muted); font-size: 12px; }
+
+/* ── 작성 폼 ───────────────────────────────────────────── */
+.dm-composer { position: fixed; width: 340px; z-index: 70; }
+.dm-composer.dm-inline { position: static; width: auto; max-width: 440px; margin: 4px 0; }
+.dm-composer .dm-card-head { background: var(--dm-card-band); color: var(--dm-muted); }
+.dm-composer .dm-kind-select {
+  border: 1px solid var(--dm-card-border);
+  background: var(--dm-card-bg);
+  color: var(--dm-card-fg);
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+.dm-card textarea {
+  width: calc(100% - 20px);
+  box-sizing: border-box;
+  margin: 10px 10px 0;
+  border: 1px solid var(--dm-card-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: var(--dm-card-bg);
+  color: var(--dm-card-fg);
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 64px;
+  outline: none;
+}
+.dm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  background: var(--dm-card-bg);
+}
+.dm-actions .dm-hint { margin-right: auto; padding: 0; }
+.dm-hint { font-size: 11px; color: var(--dm-muted); }
+.dm-btn {
+  border: 1px solid var(--dm-card-border);
+  background: var(--dm-card-bg);
+  color: var(--dm-card-fg);
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.dm-btn:not(.dm-btn-primary):hover { background: var(--dm-canvas); }
+.dm-btn.dm-btn-primary { background: var(--dm-accent); border-color: var(--dm-accent); color: #fff; }
+.dm-btn.dm-btn-primary:hover { background: var(--dm-accent-hover); border-color: var(--dm-accent-hover); color: #fff; }
+.dm-btn.dm-btn-primary:active { background: var(--dm-accent-press); border-color: var(--dm-accent-press); color: #fff; }
+
+/* ── 파일 요약 배너 ────────────────────────────────────── */
+.dm-file-summary {
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+  order: 99;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--dm-card-border);
+  border-left: 3px solid var(--dm-accent);
+  background: var(--dm-accent-soft);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--dm-card-fg);
+}
+.dm-file-summary svg { flex: none; width: 20px; height: 20px; margin-top: 2px; }
+.dm-file-summary > span:last-child { white-space: pre-line; }
+.dm-risk { flex: none; font-size: 13px; font-weight: 600; margin-right: 10px; }
+.dm-risk-high { color: var(--dm-danger); }
+.dm-risk-mid { color: var(--dm-accent-hover); }
+.dm-risk-low { color: var(--dm-muted); }
+
+/* ── 상단 상태 바 ──────────────────────────────────────── */
+.dm-status {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px;
+  border-radius: 9999px;
+  border: 1px solid var(--dm-card-border);
+  background: var(--dm-card-bg);
+  color: var(--dm-card-fg);
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.dm-status svg { width: 20px; height: 20px; }
+.dm-status.dm-offline { color: var(--dm-muted); }
+.dm-status button { border: 0; background: transparent; color: var(--dm-accent); cursor: pointer; font-size: 14px; padding: 0; }
+
+.dm-orphans { margin: 0 0 12px; padding: 8px 12px; border: 1px dashed var(--dm-accent); border-radius: var(--dm-radius); background: var(--dm-accent-soft); font-size: 13px; }
+.dm-orphans h4 { margin: 0 0 6px; font-size: 13px; color: var(--dm-accent); }
+.dm-orphans .dm-orphan { padding: 3px 0; }
+.dm-orphans code { font-size: 12px; opacity: 0.75; }
+
+/* 접힌 파일 헤더에 붙는 메모 개수 */
+.dm-collapsed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border: 1px solid var(--dm-accent);
+  border-radius: 999px;
+  background: var(--dm-accent-soft);
+  color: var(--dm-card-fg);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.dm-collapsed-badge svg { color: var(--dm-accent); }
+
+/* 접힌 파일 아래에 깔리는 요약·배지 */
+.dm-below {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--dm-card-border);
+  border-top: 0;
+  border-radius: 0 0 var(--dm-radius) var(--dm-radius);
+  overflow: hidden;
+}
+.dm-below .dm-file-summary { border-bottom: 0; }
+.dm-badge-row { padding: 7px 12px; background: var(--dm-card-bg); }
+
+/* 줄을 못 찾은 메모를 파일 위에 그대로 펼칠 때 */
+.dm-stack { display: flex; flex-direction: column; gap: 8px; padding: 0 12px 12px; background: var(--dm-card-bg); }
+.dm-stack .dm-card { position: static; width: auto; max-width: 560px; }
+
+/* 파일 단위 메모 */
+.dm-logo-btn {
+  flex: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 0;
+}
+.dm-logo-btn:hover { background: rgba(127, 127, 127, 0.14); }
+.dm-file-notes { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px; }
+.dm-file-notes .dm-card { position: static; width: auto; max-width: 560px; }
+
+/* 답을 보고 되묻는 답글 */
+.dm-reply-mine {
+  padding: 9px 11px;
+  border-top: 1px solid var(--dm-card-border);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.dm-reply-mine::before {
+  content: '나';
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dm-muted);
+}
+.dm-foot {
+  margin-top: 0;
+  padding: 10px 11px 12px;
+  border-top: 1px solid var(--dm-card-border);
+}
+
+/* 다 본 메모는 한 줄로 접힌다 */
+.dm-card.dm-resolved { opacity: 0.55; border-left-color: var(--dm-card-border); }
+.dm-card.dm-resolved:hover { opacity: 0.85; }
+.dm-check { color: var(--dm-accent); font-weight: 700; }
+.dm-card.dm-resolved:not(.dm-expanded) .dm-answer,
+.dm-card.dm-resolved:not(.dm-expanded) .dm-reply-mine,
+.dm-card.dm-resolved:not(.dm-expanded) .dm-pending,
+.dm-card.dm-resolved:not(.dm-expanded) .dm-foot { display: none; }
+.dm-card.dm-resolved:not(.dm-expanded) .dm-body {
+  padding: 6px 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--dm-muted);
+}
+
+/* 파일 메모는 접힌 한 줄이 기본 */
+.dm-card.dm-compact:not(.dm-expanded) .dm-answer,
+.dm-card.dm-compact:not(.dm-expanded) .dm-reply-mine,
+.dm-card.dm-compact:not(.dm-expanded) .dm-pending,
+.dm-card.dm-compact:not(.dm-expanded) .dm-foot { display: none; }
+.dm-card.dm-compact:not(.dm-expanded) .dm-body {
+  padding: 6px 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--dm-muted);
+}
+.dm-card.dm-compact:not(.dm-expanded) .dm-body::before { display: none; }
+.dm-file-notes { padding: 8px 12px 10px; }
+
+/* 다른 화면에서 쓴 메모 표시 */
+.dm-from-view {
+  padding: 1px 7px;
+  border: 1px solid var(--dm-card-border);
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--dm-muted);
+}
