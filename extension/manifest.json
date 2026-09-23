@@ -16,7 +16,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://github.com/*/*/pull/*/changes*"
+        "https://github.com/*/*/pull/*"
       ],
       "js": [
         "content.js"

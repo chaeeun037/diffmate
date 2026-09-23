@@ -326,6 +326,7 @@
 
   function attachHover() {
     document.addEventListener('mouseover', (e) => {
+      if (!state.ctx) { return }
       const btn = ensureHoverBtn()
       const cell = e.target?.closest?.('tr, [role="row"], [data-grid-cell-id], [data-line-number]')
       const rowEl = cell?.closest?.('tr, [role="row"]') || cell
@@ -1209,12 +1210,50 @@
   }
 
   // ── 시작 ───────────────────────────────────────────────
+  // GitHub 은 SPA 라 Conversation 에서 눌러 들어와도 페이지가 새로 뜨지 않는다.
+  // 주입은 PR 화면 전체에 하고, 켜고 끄는 건 주소를 지켜보며 여기서 한다.
+  function watchUrl() {
+    let last = location.href
+    const check = () => {
+      if (location.href === last) { return }
+      last = location.href
+      const ctx = detectContext()
+      if (ctx) {
+        state.ctx = ctx
+        state.blocksCache = null
+        state.lastJson = ''
+        refresh(true)
+        return
+      }
+      // 변경 화면을 떠났다 — 그려둔 것을 걷는다
+      state.ctx = null
+      document.querySelectorAll('[class^="dm-"], [class*=" dm-"]').forEach((el) => el.remove())
+      state.cardByNote = new Map()
+      state.summaryByPath = new Map()
+      state.cards = []
+    }
+    for (const fn of ['pushState', 'replaceState']) {
+      const orig = history[fn]
+      history[fn] = function (...args) {
+        const out = orig.apply(this, args)
+        setTimeout(check, 0)
+        return out
+      }
+    }
+    window.addEventListener('popstate', () => setTimeout(check, 0))
+    setInterval(check, 1000)
+  }
+
   function boot() {
-    const ctx = detectContext()
-    if (!ctx) { return }
-    state.ctx = ctx
+    // 지켜보기·듣기는 주소와 무관하게 붙인다. 변경 화면이 아니면 state.ctx 가 없어 아무것도 안 그린다.
+    watchUrl()
     attachHover()
-    refresh(true)
+
+    const ctx = detectContext()
+    if (ctx) {
+      state.ctx = ctx
+      refresh(true)
+    }
 
     let ticking = false
     const onMove = () => {
@@ -1251,6 +1290,7 @@
 
     // 확장 스크립트는 페이지와 다른 컨텍스트에 산다. 콘솔에서 __diffmate 를 못 부르므로 여기서 찍어둔다.
     setTimeout(() => {
+      if (!state.ctx) { return }   // 변경 화면이 아니면 진단할 것도 없다
       const report = window.__diffmate.probe()
       if (!report.files.length) {
         console.warn('[diffmate] diff 파일을 못 찾았다. 위 probe 결과를 그대로 주면 선택자를 맞춘다.')
