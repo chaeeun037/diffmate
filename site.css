@@ -1,0 +1,85 @@
+:root {
+    --page-bg: #FAF9F5;
+    --page-fg: #3D3D3A;
+    --page-strong: #141413;
+    --page-muted: #73726C;
+    --page-line: #E7E6E1;
+    --gh-add: #e6ffec;
+    --gh-add-num: #ccffd8;
+    --gh-hunk: #ddf4ff;
+    --gh-gutter: #f6f8fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-fg);
+    font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px 96px; }
+  header { padding: 72px 0 40px; }
+  h1 { margin: 0 0 12px; font-size: 44px; letter-spacing: -0.02em; color: var(--page-strong); }
+  .tag { margin: 0 0 8px; font-size: 20px; color: var(--page-fg); }
+  .sub { margin: 0; color: var(--page-muted); }
+  h2 { margin: 56px 0 8px; font-size: 22px; color: var(--page-strong); letter-spacing: -0.01em; }
+  h2 + p { margin-top: 0; color: var(--page-muted); }
+  .links { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 9px 18px; border-radius: 9999px;
+    border: 1px solid var(--dm-accent); color: #fff; background: var(--dm-accent);
+    text-decoration: none; font-size: 15px;
+  }
+  .btn.ghost { background: transparent; color: var(--dm-accent); }
+  .btn:hover { background: var(--dm-accent-hover); border-color: var(--dm-accent-hover); color: #fff; }
+
+  /* GitHub 화면을 흉내 낸 부분 — 실제 확장은 이 위에 얹힌다 */
+  .file {
+    border: 1px solid var(--page-line); border-radius: 6px;
+    background: #fff; overflow: hidden; margin-top: 16px;
+  }
+  .file-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: var(--gh-gutter);
+    border-bottom: 1px solid var(--page-line);
+    font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--page-strong);
+  }
+  table.diff { width: 100%; border-collapse: collapse; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  table.diff td { padding: 0 10px; vertical-align: top; }
+  td.num { width: 1%; text-align: right; color: var(--page-muted); background: var(--gh-gutter); user-select: none; white-space: nowrap; }
+  tr.hunk td { background: var(--gh-hunk); color: #57606a; }
+  tr.add td.code { background: var(--gh-add); }
+  tr.add td.num { background: var(--gh-add-num); }
+  td.code { white-space: pre; }
+  .note-row td { padding: 0 10px 10px; }
+  .caption { margin: 10px 0 0; font-size: 14px; color: var(--page-muted); }
+  .steps { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .steps li { padding-left: 34px; position: relative; }
+  .steps b { color: var(--page-strong); font-weight: 600; }
+  .steps li::before {
+    content: counter(s); counter-increment: s;
+    position: absolute; left: 0; top: 2px; width: 22px; height: 22px;
+    border-radius: 9999px; background: var(--dm-accent); color: #fff;
+    font-size: 12px; line-height: 22px; text-align: center;
+  }
+  .steps { counter-reset: s; }
+  pre.sh {
+    margin: 14px 0 0; padding: 14px 16px; border-radius: 12px;
+    background: #141413; color: #F8F8F7; overflow-x: auto;
+    font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--page-line); font-size: 14px; color: var(--page-muted); }
+  footer a { color: var(--dm-accent); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page-bg: #1F1E1D; --page-fg: rgba(248,248,247,.75); --page-strong: #F8F8F7;
+      --page-muted: #87867F; --page-line: #30302E;
+      --gh-add: #12261e; --gh-add-num: #1b4721; --gh-hunk: #121d2f; --gh-gutter: #161b22;
+    }
+    :root:not([data-theme="light"]) .file { background: #141413; }
+  }
+
+.stack { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.stack .file { margin-top: 0; }
+.file-head { font-weight: 500; }
+h2 + p b, .caption b { color: var(--page-strong); }
+header .tag b { color: var(--page-strong); }

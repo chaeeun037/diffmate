@@ -4,118 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>diffmate</title>
-<meta name="description" content="Private notes on GitHub PR diffs, answered in place by an AI agent.">
+<meta name="description" content="Open a pull request and every file already says why it is worth your attention. Ask Claude right there when it is not enough.">
 <link rel="stylesheet" href="extension/content.css">
-<style>
-  :root {
-    --page-bg: #FAF9F5;
-    --page-fg: #3D3D3A;
-    --page-strong: #141413;
-    --page-muted: #73726C;
-    --page-line: #E7E6E1;
-    --gh-add: #e6ffec;
-    --gh-add-num: #ccffd8;
-    --gh-hunk: #ddf4ff;
-    --gh-gutter: #f6f8fa;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--page-bg);
-    color: var(--page-fg);
-    font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-  }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px 96px; }
-  header { padding: 72px 0 40px; }
-  h1 { margin: 0 0 12px; font-size: 44px; letter-spacing: -0.02em; color: var(--page-strong); }
-  .tag { margin: 0 0 8px; font-size: 20px; color: var(--page-fg); }
-  .sub { margin: 0; color: var(--page-muted); }
-  h2 { margin: 56px 0 8px; font-size: 22px; color: var(--page-strong); letter-spacing: -0.01em; }
-  h2 + p { margin-top: 0; color: var(--page-muted); }
-  .links { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 9px 18px; border-radius: 9999px;
-    border: 1px solid var(--dm-accent); color: #fff; background: var(--dm-accent);
-    text-decoration: none; font-size: 15px;
-  }
-  .btn.ghost { background: transparent; color: var(--dm-accent); }
-  .btn:hover { background: var(--dm-accent-hover); border-color: var(--dm-accent-hover); color: #fff; }
-
-  /* GitHub 화면을 흉내 낸 부분 — 실제 확장은 이 위에 얹힌다 */
-  .file {
-    border: 1px solid var(--page-line); border-radius: 6px;
-    background: #fff; overflow: hidden; margin-top: 16px;
-  }
-  .file-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px; background: var(--gh-gutter);
-    border-bottom: 1px solid var(--page-line);
-    font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--page-strong);
-  }
-  table.diff { width: 100%; border-collapse: collapse; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  table.diff td { padding: 0 10px; vertical-align: top; }
-  td.num { width: 1%; text-align: right; color: var(--page-muted); background: var(--gh-gutter); user-select: none; white-space: nowrap; }
-  tr.hunk td { background: var(--gh-hunk); color: #57606a; }
-  tr.add td.code { background: var(--gh-add); }
-  tr.add td.num { background: var(--gh-add-num); }
-  td.code { white-space: pre; }
-  .note-row td { padding: 0 10px 10px; }
-  .caption { margin: 10px 0 0; font-size: 14px; color: var(--page-muted); }
-  .steps { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
-  .steps li { padding-left: 34px; position: relative; }
-  .steps b { color: var(--page-strong); font-weight: 600; }
-  .steps li::before {
-    content: counter(s); counter-increment: s;
-    position: absolute; left: 0; top: 2px; width: 22px; height: 22px;
-    border-radius: 9999px; background: var(--dm-accent); color: #fff;
-    font-size: 12px; line-height: 22px; text-align: center;
-  }
-  .steps { counter-reset: s; }
-  pre.sh {
-    margin: 14px 0 0; padding: 14px 16px; border-radius: 12px;
-    background: #141413; color: #F8F8F7; overflow-x: auto;
-    font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-  footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--page-line); font-size: 14px; color: var(--page-muted); }
-  footer a { color: var(--dm-accent); }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --page-bg: #1F1E1D; --page-fg: rgba(248,248,247,.75); --page-strong: #F8F8F7;
-      --page-muted: #87867F; --page-line: #30302E;
-      --gh-add: #12261e; --gh-add-num: #1b4721; --gh-hunk: #121d2f; --gh-gutter: #161b22;
-    }
-    :root:not([data-theme="light"]) .file { background: #141413; }
-  }
-</style>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
 <div class="wrap">
 
 <header>
   <h1>diffmate</h1>
-  <p class="tag">Leave private notes on a GitHub pull request diff, and have an AI agent answer them in place.</p>
-  <p class="sub">Nothing is posted to GitHub. Notes live on your machine only.</p>
+  <p class="tag">Open a pull request and <b>every changed file already carries one line</b> telling you why it matters.</p>
+  <p class="sub">When that is not enough, ask Claude right there — the answer lands next to the same line. Nothing is posted to GitHub.</p>
   <div class="links">
     <a class="btn" href="https://github.com/chaeeun037/diffmate">GitHub</a>
     <a class="btn ghost" href="ko/">한국어</a>
   </div>
 </header>
 
-<h2>What it looks like</h2>
-<p>Everything in clay below is drawn by the extension. The diff underneath is GitHub, untouched.</p>
+<h2>One line per file</h2>
+<p>Skimming the file list is enough to decide <b>where to start</b>. Every line under a filename is drawn by the extension.</p>
 
-<div class="file">
-  <div class="file-head">▾ src/lib/retryFetch.ts</div>
-  <table class="diff">
-    <tr class="note-row"><td colspan="3" style="padding:0">
+<div class="stack">
+    <div class="file">
+      <div class="file-head">▸ src/lib/retryFetch.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
         <span class="dm-risk dm-risk-high">● high</span>
         <span>Retry wrapper every API call goes through. If the stop condition is wrong, a failed request repeats until the tab is closed.</span>
       </div>
-    </td></tr>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/pages/_document.tsx</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-high">● high</span>
+        <span>Beacon injected into every page. If the path check on the first line is wrong, unrelated pages fire the log too.</span>
+      </div>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/hooks/useSession.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-mid">● medium</span>
+        <span>Hook that reads the session. The value is undefined on first render, so branching on it flashes the logged-out screen.</span>
+      </div>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/constants/LogType.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-low">○ skim</span>
+        <span>Registers three log names.</span>
+      </div>
+    </div>
+</div>
+
+<p class="caption">It never says what changed — the diff already shows that. It says <b>what breaks if this is wrong</b>, ranked by how far the damage spreads.</p>
+
+<h2>Why this exists</h2>
+<p>
+Reviewing AI-written code from a diff alone, you cannot tell <b>which file matters</b>.
+Files are listed by path, so a one-line constant sits next to something that touches every page.
+Write it up in the pull request description and it ends up far above the fold, where nobody scrolls back to.
+</p>
+<p>So the explanation moved <b>next to the code</b>. The map is in place before you start reading.</p>
+
+<h2>Ask where you got stuck</h2>
+<p>
+Hover a line and a button appears. Ask, and Claude answers <b>in the same place</b>. Push back and it stacks on the same card.
+</p>
+
+<div class="file">
+  <div class="file-head">▾ src/lib/retryFetch.ts</div>
+  <table class="diff">
     <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
-    <tr><td class="num">12</td><td class="num">12</td><td class="code">export async function retryFetch(url: string, init?: RequestInit) {</td></tr>
     <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
     <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
     <tr class="note-row"><td colspan="3">
@@ -126,26 +88,27 @@
           <span class="dm-spacer"></span>
           <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
         </div>
-        <div class="dm-body">Why a while loop instead of recursion? Doesn't this block the caller?</div>
-        <div class="dm-answer">It does not block — every attempt awaits, so the loop yields between tries. Recursion would grow the stack by one frame per retry, and the stack trace on failure would bury the original error.</div>
-        <div class="dm-reply-mine">Got it. So MAX_ATTEMPTS is the only thing stopping it?</div>
-        <div class="dm-answer">Yes, plus the abort signal passed in <code>init</code>. If neither is set, the loop is bounded only by MAX_ATTEMPTS.</div>
+        <div class="dm-body">Why a loop instead of recursion? Doesn't this block the caller?</div>
+        <div class="dm-answer">It does not. Every attempt awaits, so other work runs in between. Recursion would add a stack frame per retry, and the original error would end up buried under them.</div>
+        <div class="dm-reply-mine">Got it. So the attempt limit is the only thing stopping it?</div>
+        <div class="dm-answer">That and the abort signal you pass in. With neither set, the attempt limit is all that is left.</div>
         <div class="dm-actions dm-foot"><button class="dm-btn" type="button">reply</button></div>
       </div>
     </td></tr>
     <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">16</td><td class="code">    if (res.ok) return res;</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">17</td><td class="code">    attempt += 1;</td></tr>
-    <tr><td class="num">13</td><td class="num">18</td><td class="code">  }</td></tr>
   </table>
 </div>
-<p class="caption">The label above the file is written by the agent before you start reading. The card is a thread: you ask, the agent answers, you push back.</p>
 
-<h2>How it works</h2>
+<p class="caption">
+<b>This is not a replacement for GitHub comments.</b> Anything other people should see belongs there.
+These are yours alone, and the one answering is your AI rather than a colleague — which makes "wait, why is this like this?" an easy thing to ask.
+</p>
+
+<h2>Three steps</h2>
 <ol class="steps">
-  <li><b>The agent goes first.</b> Right after opening a PR it writes one line per file — not what changed, but what breaks if it is wrong.</li>
-  <li><b>You read the diff and ask.</b> Hover a line, click the button, type. Notes are saved to a JSON file on your machine.</li>
-  <li><b>The agent answers in place.</b> Answers land on the same line. Follow-ups stack on the same card, so the thread stays where the code is.</li>
+  <li><b>Claude goes first.</b> Right after the pull request opens, it fills in one line per file. By the time you open the page it is already there.</li>
+  <li><b>Ask as you read.</b> Hover a line, click the button, type. Notes are saved to a file on your machine and nowhere else.</li>
+  <li><b>Answers land in place.</b> Ask Claude to answer your notes and they appear on the cards — no refresh needed.</li>
 </ol>
 
 <h2>Install</h2>

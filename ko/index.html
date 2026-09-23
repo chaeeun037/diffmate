@@ -4,118 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>diffmate</title>
-<meta name="description" content="GitHub PR diff 위에 나만 보는 메모를 달고, AI 에이전트가 같은 자리에 답한다.">
+<meta name="description" content="PR을 열면 파일마다 왜 봐야 하는지 한 줄로 보인다. 궁금하면 그 자리에서 클로드에게 묻는다.">
 <link rel="stylesheet" href="../extension/content.css">
-<style>
-  :root {
-    --page-bg: #FAF9F5;
-    --page-fg: #3D3D3A;
-    --page-strong: #141413;
-    --page-muted: #73726C;
-    --page-line: #E7E6E1;
-    --gh-add: #e6ffec;
-    --gh-add-num: #ccffd8;
-    --gh-hunk: #ddf4ff;
-    --gh-gutter: #f6f8fa;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--page-bg);
-    color: var(--page-fg);
-    font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-  }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px 96px; }
-  header { padding: 72px 0 40px; }
-  h1 { margin: 0 0 12px; font-size: 44px; letter-spacing: -0.02em; color: var(--page-strong); }
-  .tag { margin: 0 0 8px; font-size: 20px; color: var(--page-fg); }
-  .sub { margin: 0; color: var(--page-muted); }
-  h2 { margin: 56px 0 8px; font-size: 22px; color: var(--page-strong); letter-spacing: -0.01em; }
-  h2 + p { margin-top: 0; color: var(--page-muted); }
-  .links { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 9px 18px; border-radius: 9999px;
-    border: 1px solid var(--dm-accent); color: #fff; background: var(--dm-accent);
-    text-decoration: none; font-size: 15px;
-  }
-  .btn.ghost { background: transparent; color: var(--dm-accent); }
-  .btn:hover { background: var(--dm-accent-hover); border-color: var(--dm-accent-hover); color: #fff; }
-
-  /* GitHub 화면을 흉내 낸 부분 — 실제 확장은 이 위에 얹힌다 */
-  .file {
-    border: 1px solid var(--page-line); border-radius: 6px;
-    background: #fff; overflow: hidden; margin-top: 16px;
-  }
-  .file-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px; background: var(--gh-gutter);
-    border-bottom: 1px solid var(--page-line);
-    font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--page-strong);
-  }
-  table.diff { width: 100%; border-collapse: collapse; font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  table.diff td { padding: 0 10px; vertical-align: top; }
-  td.num { width: 1%; text-align: right; color: var(--page-muted); background: var(--gh-gutter); user-select: none; white-space: nowrap; }
-  tr.hunk td { background: var(--gh-hunk); color: #57606a; }
-  tr.add td.code { background: var(--gh-add); }
-  tr.add td.num { background: var(--gh-add-num); }
-  td.code { white-space: pre; }
-  .note-row td { padding: 0 10px 10px; }
-  .caption { margin: 10px 0 0; font-size: 14px; color: var(--page-muted); }
-  .steps { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
-  .steps li { padding-left: 34px; position: relative; }
-  .steps b { color: var(--page-strong); font-weight: 600; }
-  .steps li::before {
-    content: counter(s); counter-increment: s;
-    position: absolute; left: 0; top: 2px; width: 22px; height: 22px;
-    border-radius: 9999px; background: var(--dm-accent); color: #fff;
-    font-size: 12px; line-height: 22px; text-align: center;
-  }
-  .steps { counter-reset: s; }
-  pre.sh {
-    margin: 14px 0 0; padding: 14px 16px; border-radius: 12px;
-    background: #141413; color: #F8F8F7; overflow-x: auto;
-    font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-  footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--page-line); font-size: 14px; color: var(--page-muted); }
-  footer a { color: var(--dm-accent); }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --page-bg: #1F1E1D; --page-fg: rgba(248,248,247,.75); --page-strong: #F8F8F7;
-      --page-muted: #87867F; --page-line: #30302E;
-      --gh-add: #12261e; --gh-add-num: #1b4721; --gh-hunk: #121d2f; --gh-gutter: #161b22;
-    }
-    :root:not([data-theme="light"]) .file { background: #141413; }
-  }
-</style>
+<link rel="stylesheet" href="../site.css">
 </head>
 <body>
 <div class="wrap">
 
 <header>
   <h1>diffmate</h1>
-  <p class="tag">GitHub PR diff 위에 나만 보는 메모를 달면, AI 에이전트가 같은 자리에 답한다.</p>
-  <p class="sub">GitHub에는 아무것도 올라가지 않는다. 메모는 내 컴퓨터에만 있다.</p>
+  <p class="tag">PR을 열면 <b>파일마다 왜 봐야 하는지 한 줄</b>로 먼저 보인다.</p>
+  <p class="sub">궁금하면 그 자리에서 클로드에게 묻고, 답은 같은 줄 옆에 쌓인다. GitHub에는 아무것도 올라가지 않는다.</p>
   <div class="links">
     <a class="btn" href="https://github.com/chaeeun037/diffmate">GitHub</a>
     <a class="btn ghost" href="../">English</a>
   </div>
 </header>
 
-<h2>어떻게 보이나</h2>
-<p>아래에서 주황빛이 도는 것은 전부 확장이 그린 것이다. 그 아래 diff는 GitHub 그대로다.</p>
+<h2>파일마다 한 줄</h2>
+<p>변경 파일 목록을 훑는 것만으로 <b>어디부터 봐야 할지</b>가 정해진다. 파일 이름 아래 줄은 전부 확장이 그린 것이다.</p>
 
-<div class="file">
-  <div class="file-head">▾ src/lib/retryFetch.ts</div>
-  <table class="diff">
-    <tr class="note-row"><td colspan="3" style="padding:0">
+<div class="stack">
+    <div class="file">
+      <div class="file-head">▸ src/lib/retryFetch.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
         <span class="dm-risk dm-risk-high">● 중요</span>
         <span>모든 API 요청이 거쳐 가는 재시도 래퍼. 멈추는 조건이 틀리면 실패한 요청이 탭을 닫을 때까지 반복된다.</span>
       </div>
-    </td></tr>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/pages/_document.tsx</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-high">● 중요</span>
+        <span>모든 페이지 HTML에 심는 '측정 시작' 신호. 맨 윗줄 주소 검사가 틀리면 엉뚱한 페이지에서도 로그가 나간다.</span>
+      </div>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/hooks/useSession.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-mid">● 보통</span>
+        <span>로그인 상태를 읽는 훅. 첫 렌더에 값이 undefined라 그대로 분기하면 로그아웃 화면이 한 번 깜빡인다.</span>
+      </div>
+    </div>
+    <div class="file">
+      <div class="file-head">▸ src/constants/LogType.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-low">○ 훑기</span>
+        <span>로그 이름 3개 등록.</span>
+      </div>
+    </div>
+</div>
+
+<p class="caption">무엇이 바뀌었는지는 쓰지 않는다 — 그건 diff가 이미 보여준다. 대신 <b>틀렸을 때 무엇이 깨지는지</b>를 쓰고, 번지는 범위에 따라 중요·보통·훑기로 나눈다.</p>
+
+<h2>왜 필요했나</h2>
+<p>
+AI가 쓴 코드를 검수할 때, diff만 봐서는 <b>어느 파일이 중요한지 알 수 없다</b>.
+파일은 경로순으로 늘어서 있고, 한 줄짜리 상수 추가와 전 페이지에 영향을 주는 코드가 나란히 보인다.
+PR 본문에 길게 써두면 정작 코드를 볼 때는 화면 위쪽 멀리 있어서 아무도 다시 올라가지 않는다.
+</p>
+<p>그래서 설명을 <b>코드 옆으로 옮겼다</b>. 읽기 시작하기 전에 지도가 먼저 깔린다.</p>
+
+<h2>읽다가 막히면 그 자리에서 묻는다</h2>
+<p>
+줄에 마우스를 올리면 버튼이 뜬다. 눌러서 물으면 클로드가 <b>같은 자리에</b> 답한다. 되물으면 같은 카드에 쌓인다.
+</p>
+
+<div class="file">
+  <div class="file-head">▾ src/lib/retryFetch.ts</div>
+  <table class="diff">
     <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
-    <tr><td class="num">12</td><td class="num">12</td><td class="code">export async function retryFetch(url: string, init?: RequestInit) {</td></tr>
     <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
     <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
     <tr class="note-row"><td colspan="3">
@@ -134,18 +96,19 @@
       </div>
     </td></tr>
     <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">16</td><td class="code">    if (res.ok) return res;</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">17</td><td class="code">    attempt += 1;</td></tr>
-    <tr><td class="num">13</td><td class="num">18</td><td class="code">  }</td></tr>
   </table>
 </div>
-<p class="caption">파일 위 한 줄은 읽기 시작하기 전에 에이전트가 써 둔 것이다. 카드는 대화다 — 묻고, 답이 오고, 다시 되묻는다.</p>
 
-<h2>어떻게 도나</h2>
+<p class="caption">
+<b>GitHub 코멘트를 대신하려는 게 아니다.</b> 남에게 보이는 코멘트는 GitHub이 맡는다.
+이건 나만 보이고, 답하는 쪽이 사람이 아니라 내가 쓰는 AI다. 그래서 "이게 왜 이래?" 같은 걸 편하게 물을 수 있다.
+</p>
+
+<h2>세 단계로 돈다</h2>
 <ol class="steps">
-  <li><b>에이전트가 먼저 쓴다.</b> PR을 올린 직후 파일마다 한 줄을 채운다. 무엇이 바뀌었는지가 아니라, 틀렸을 때 무엇이 깨지는지를 쓴다.</li>
-  <li><b>읽다가 묻는다.</b> 줄에 마우스를 올리면 버튼이 뜬다. 누르고 쓰면 내 컴퓨터의 JSON 파일에 저장된다.</li>
-  <li><b>같은 자리에 답이 온다.</b> 되물으면 같은 카드에 쌓인다. 대화가 코드 옆을 떠나지 않는다.</li>
+  <li><b>클로드가 먼저 깔아둔다.</b> PR을 올린 직후 파일마다 한 줄을 채운다. 내가 화면을 열면 이미 깔려 있다.</li>
+  <li><b>읽다가 묻는다.</b> 줄에 마우스를 올리고 버튼을 눌러 쓴다. 메모는 내 컴퓨터의 파일에만 저장된다.</li>
+  <li><b>같은 자리에 답이 온다.</b> 클로드에게 "메모 답변 달아줘"라고 하면 카드에 답이 붙는다. 새로고침하지 않아도 뜬다.</li>
 </ol>
 
 <h2>설치</h2>
