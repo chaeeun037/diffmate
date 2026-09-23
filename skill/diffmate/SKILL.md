@@ -128,7 +128,7 @@ Handle only the ones with `status: "open"`.
 | kind | What you do |
 | --- | --- |
 | `question` | Answer. **Do not touch the code.** |
-| `request` | Find every place that has to change first. Once it is done, **write in the answer what you changed and how**, then move the anchor as in §5, since that line has shifted. |
+| `request` | Find every place that has to change first. Once it is done, **write in the answer what you changed and how**, then move the anchor as in §5, since that line has shifted. **If someone else makes the change, ask them to move the anchor too** — leave that out and the note loses its line. |
 | `memo` | Leave it alone. |
 
 ```bash

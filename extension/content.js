@@ -554,11 +554,16 @@
       }
       const row = findRow(note)
       if (!row) {
-        // 파일이 접혀 있으면 줄이 아예 없다. 메모를 잃어버린 게 아니므로 떠돌이로 보내지 않는다.
         const key = normPath(note.path)
+        // 파일이 접혀 있으면 줄이 아예 없다. 메모를 잃어버린 게 아니므로 떠돌이로 보내지 않는다.
         if (blocks.has(key) && !state.rows.has(key)) {
           if (!collapsed.has(key)) { collapsed.set(key, []) }
           collapsed.get(key).push(note)
+        } else if (blocks.has(key)) {
+          // 파일은 그대로인데 그 줄만 사라졌다(대개 요청을 처리해 코드가 바뀐 경우).
+          // 화면 맨 위로 보내면 어느 파일 얘기였는지 잃는다. 그 파일의 파일 메모로 내린다.
+          if (!fileNotes.has(key)) { fileNotes.set(key, []) }
+          fileNotes.get(key).push({ ...note, drifted: true })
         } else {
           orphans.push(note)
         }
@@ -771,6 +776,14 @@
     where.textContent = row.line ? `L${row.line}` : '파일'
     head.appendChild(where)
 
+    if (note.drifted) {
+      const drift = document.createElement('span')
+      drift.className = 'dm-from-view'
+      drift.textContent = `L${note.line} 사라짐`
+      drift.title = '코드가 바뀌어 원래 줄이 없어졌다. 이 파일의 메모로 내려왔다'
+      head.appendChild(drift)
+    }
+
     // 다른 화면(전체 diff ↔ 특정 커밋)에서 쓴 메모는 줄이 안 맞을 수 있다. 어디서 썼는지 알려준다.
     const noteView = note.view || 'all'
     if (noteView !== (state.ctx.view || 'all')) {
@@ -950,7 +963,7 @@
     const box = document.createElement('div')
     box.className = 'dm-orphans'
     const h = document.createElement('h4')
-    h.textContent = `떠돌이 메모 ${orphans.length}개 — 코드가 바뀌어 원래 줄을 못 찾았다`
+    h.textContent = `떠돌이 메모 ${orphans.length}개 — 이 화면에 그 파일이 없다`
     box.appendChild(h)
     for (const n of orphans) {
       const row = document.createElement('div')
