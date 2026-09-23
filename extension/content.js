@@ -1242,17 +1242,15 @@
     setInterval(check, 400)
   }
 
-  function boot() {
-    console.debug('[diffmate] 주입됨', location.pathname, '· 변경화면=', location.pathname.includes('/changes'))
-    // 지켜보기·듣기는 주소와 무관하게 붙인다. 변경 화면이 아니면 state.ctx 가 없어 아무것도 안 그린다.
-    watchUrl()
-    attachHover()
+  // GitHub 어느 페이지에서 출발하든 SPA 로 변경 화면에 닿을 수 있다. 그래서 주입은 전체에 받고,
+  // 실제 일(듣기·감시·폴링)은 변경 화면에 처음 닿는 순간에만 한 번 붙인다.
+  let activated = false
 
-    const ctx = detectContext()
-    if (ctx) {
-      state.ctx = ctx
-      refresh(true)
-    }
+  function activate() {
+    if (activated) { return }
+    activated = true
+
+    attachHover()
 
     let ticking = false
     const onMove = () => {
@@ -1272,7 +1270,7 @@
     const OURS = '[class^="dm-"], [class*=" dm-"]'
     let debounce = null
     new MutationObserver((records) => {
-      // 내가 그린 것 때문에 일어난 변화는 무시한다. 안 그러면 렌더 → 변화 감지 → 렌더로 계속 돈다.
+      if (!state.ctx) { return }
       const fromPage = records.some((r) => {
         const t = r.target
         if (t?.closest?.(OURS)) { return false }
@@ -1286,15 +1284,46 @@
     }).observe(document.body, { childList: true, subtree: true })
 
     setInterval(() => refresh(false), POLL_MS)
+  }
 
-    // 확장 스크립트는 페이지와 다른 컨텍스트에 산다. 콘솔에서 __diffmate 를 못 부르므로 여기서 찍어둔다.
-    setTimeout(() => {
-      if (!state.ctx) { return }   // 변경 화면이 아니면 진단할 것도 없다
-      const report = window.__diffmate.probe()
-      if (!report.files.length) {
-        console.warn('[diffmate] diff 파일을 못 찾았다. 위 probe 결과를 그대로 주면 선택자를 맞춘다.')
+  // 변경 화면인지 지켜본다. SPA 이동은 페이지가 새로 뜨지 않아 이 감시가 유일한 신호다.
+  function watchUrl() {
+    let last = location.href
+    const check = () => {
+      if (location.href === last) { return }
+      last = location.href
+      const ctx = detectContext()
+      console.debug('[diffmate] 주소 바뀜', location.pathname, '· 켬=', !!ctx)
+      if (ctx) {
+        state.ctx = ctx
+        state.blocksCache = null
+        state.lastJson = ''
+        activate()
+        refresh(true)
+        return
       }
-    }, 1500)
+      state.ctx = null
+      document.querySelectorAll('[class^="dm-"], [class*=" dm-"]').forEach((el) => el.remove())
+      state.cardByNote = new Map()
+      state.summaryByPath = new Map()
+      state.cards = []
+    }
+    window.addEventListener('popstate', () => setTimeout(check, 0))
+    if (window.navigation) {
+      window.navigation.addEventListener('navigatesuccess', () => setTimeout(check, 0))
+    }
+    setInterval(check, 400)
+  }
+
+  function boot() {
+    console.debug('[diffmate] 주입됨', location.pathname, '· 변경화면=', location.pathname.includes('/changes'))
+    watchUrl()
+
+    const ctx = detectContext()
+    if (!ctx) { return }
+    state.ctx = ctx
+    activate()
+    refresh(true)
   }
 
   window.__diffmate = {

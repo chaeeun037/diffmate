@@ -98,6 +98,7 @@ When it cannot be found, it is not dropped — it surfaces as an "orphan note" a
 ## Good to know
 
 - Built for **unified diff view**. Split view is not handled yet.
+- The script loads on any github.com page but stays idle until you reach a pull request's changes view — GitHub is a single-page app, so it cannot be injected on arrival.
 - It rides on GitHub's `Files changed` DOM, so **a redesign can break it.** If buttons stop appearing,
   the `[diffmate]` console logs say where it lost track.
 - A collapsed file (marked `Viewed`) has no diff lines on the page. Its notes are not hidden —
