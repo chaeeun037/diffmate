@@ -1218,6 +1218,7 @@
       if (location.href === last) { return }
       last = location.href
       const ctx = detectContext()
+      console.debug('[diffmate] 주소 바뀜', location.pathname, '· 켬=', !!ctx)
       if (ctx) {
         state.ctx = ctx
         state.blocksCache = null
@@ -1245,6 +1246,7 @@
   }
 
   function boot() {
+    console.debug('[diffmate] 주입됨', location.pathname, '· 변경화면=', location.pathname.includes('/changes'))
     // 지켜보기·듣기는 주소와 무관하게 붙인다. 변경 화면이 아니면 state.ctx 가 없어 아무것도 안 그린다.
     watchUrl()
     attachHover()
