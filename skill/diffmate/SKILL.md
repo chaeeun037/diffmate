@@ -158,7 +158,8 @@ echo 'It does not. _document is only rendered to a string on the server.' \
   - *Tool bookkeeping* — that you moved a note, lost its line, or normalised the store. **The screen
     already shows that.** A moved card sits where it moved to and carries a marker. Saying it again in
     prose pushes the code out of the way.
-- The card is narrow. **Three sentences at most**; past that, point at a file instead.
+- The card is narrow. Keep it **under 180 characters** (four or five lines on screen). Past that, do not
+  split sentences — **drop the reasoning** and keep the verdict and where to look. Point at a file if more is needed.
 - If you do not know, say so, and say what would settle it.
 - If the question rests on a wrong premise, correct the premise first.
 
@@ -172,6 +173,9 @@ echo '<follow-up answer>' | node $DIFFMATE/cli/notes.mjs reply <owner/repo> <pr>
 ```
 
 The rule is simple: if the last entry in `thread` is `me`, it is your turn.
+
+The same **180-character** limit applies to replies. Follow-ups drift long — answer what was asked
+instead of restating the earlier answer.
 
 ## 5. When the code moved, or a note drifted
 
