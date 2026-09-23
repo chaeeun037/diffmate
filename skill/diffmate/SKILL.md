@@ -151,9 +151,13 @@ echo 'It does not. _document is only rendered to a string on the server.' \
   | node $DIFFMATE/cli/notes.mjs answer <owner/repo> <pr> <noteId>
 ```
 
-- **Write to the reviewer.** Keep the vocabulary of your own workflow — role names, handoff numbers,
-  ticket states — out of the card. The reader does not know that structure and has no reason to.
-  Say **what changes**, not who you passed it to. If that matters, one clause covers it.
+- **Keep the card about the code.** Two things keep leaking in.
+  - *Your own workflow* — role names, handoff numbers, ticket states. The reader does not know that
+    structure and has no reason to. Say **what changes**, not who you passed it to; one clause covers
+    the handoff if it matters.
+  - *Tool bookkeeping* — that you moved a note, lost its line, or normalised the store. **The screen
+    already shows that.** A moved card sits where it moved to and carries a marker. Saying it again in
+    prose pushes the code out of the way.
 - The card is narrow. **Three sentences at most**; past that, point at a file instead.
 - If you do not know, say so, and say what would settle it.
 - If the question rests on a wrong premise, correct the premise first.
