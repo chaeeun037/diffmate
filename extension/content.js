@@ -1233,16 +1233,13 @@
       state.summaryByPath = new Map()
       state.cards = []
     }
-    for (const fn of ['pushState', 'replaceState']) {
-      const orig = history[fn]
-      history[fn] = function (...args) {
-        const out = orig.apply(this, args)
-        setTimeout(check, 0)
-        return out
-      }
-    }
+    // pushState 가로채기는 안 통한다 — 확장 스크립트는 페이지와 다른 자바스크립트 세계에 있어서
+    // 여기서 바꾼 history 는 GitHub 이 부르는 것과 다른 객체다.
     window.addEventListener('popstate', () => setTimeout(check, 0))
-    setInterval(check, 1000)
+    if (window.navigation) {
+      window.navigation.addEventListener('navigatesuccess', () => setTimeout(check, 0))
+    }
+    setInterval(check, 400)
   }
 
   function boot() {
