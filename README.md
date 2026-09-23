@@ -58,6 +58,7 @@ Node 18+. No dependencies.
 ```bash
 node cli/notes.mjs list                          # which PRs have unanswered notes
 node cli/notes.mjs list <owner/repo> <pr>        # full notes as JSON
+node cli/notes.mjs stale <owner/repo> <pr>       # which summaries a later commit made stale
 echo 'answer'   | node cli/notes.mjs answer <owner/repo> <pr> <noteId>
 echo 'follow-up'| node cli/notes.mjs reply  <owner/repo> <pr> <noteId>
 ```

@@ -6,18 +6,37 @@
 //   node notes-cli.mjs reply  <repo> <pr> <noteId>          되물음에 답글 달기 (stdin)
 //   node notes-cli.mjs edit   <repo> <pr> <noteId> <turn>   내가 쓴 답 고치기 (turn=자리번호|answer)
 //   node notes-cli.mjs summarize <repo> <pr>                {"path":{"summary","risk","order"}} 를 stdin 으로
+//   node notes-cli.mjs stale <repo> <pr>                    리뷰 커밋으로 낡은 요약 찾기
 //   node notes-cli.mjs reanchor <repo> <pr> <noteId> <line> 새 줄 내용을 stdin 으로 (요청 처리 후)
 //   node notes-cli.mjs move <repo> <pr> <noteId> <새 경로>   파일을 잘못 찾아간 메모 옮기기
 //   node notes-cli.mjs normalize <repo> <pr>                저장 형식을 현재 규칙으로 맞추기
 
+import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join, dirname } from 'node:path'
+import { promisify } from 'node:util'
 
 const ROOT = process.env.DIFFMATE_DIR || join(homedir(), '.diffmate')
 const norm = (t) => String(t ?? '').replace(/\s+/g, ' ').trim()
 const hash = (t) => createHash('sha1').update(norm(t)).digest('hex').slice(0, 12)
+const exec = promisify(execFile)
+
+// PR 의 파일마다 지금 붙어 있는 blob sha. 요약이 어느 버전을 보고 쓰였는지 가르는 기준이 된다.
+async function prFileShas(repo, pr) {
+  const { stdout } = await exec('gh', [
+    'api', '--paginate', `repos/${repo}/pulls/${Number(pr)}/files`,
+    '--jq', '.[] | [.filename, .sha] | @tsv',
+  ], { maxBuffer: 32 * 1024 * 1024 })
+  const map = new Map()
+  for (const line of stdout.split('\n')) {
+    const [file, sha] = line.split('\t')
+    if (file && sha) { map.set(file, sha) }
+  }
+  return map
+}
+
 const pathFor = (repo, pr) => join(ROOT, repo.replace('/', '__').replace(/[^\w.@-]/g, '_'), `${Number(pr)}.json`)
 
 async function read(repo, pr) {
@@ -94,9 +113,36 @@ if (cmd === 'list' && !repo) {
 } else if (cmd === 'summarize') {
   const map = JSON.parse(await stdin())
   const d = (await read(repo, pr)) || { repo, pr: Number(pr), round: 0, files: {}, notes: [] }
+  // sha 를 못 받아도 요약은 기록한다 — 네트워크 때문에 작업이 멈추면 안 된다
+  const shas = await prFileShas(repo, pr).catch(() => null)
+  if (!shas) { console.error('경고: PR 파일 sha 를 못 받았다. stale 이 이 요약을 판정하지 못한다') }
+  for (const [path, value] of Object.entries(map)) {
+    if (shas?.has(path)) { map[path] = { ...value, sha: shas.get(path) } }
+  }
   d.files = { ...d.files, ...map }
   await write(repo, pr, d)
   console.log(`파일 요약 ${Object.keys(map).length}건 기록`)
+} else if (cmd === 'stale') {
+  const d = await read(repo, pr)
+  if (!d) { console.error('저장소 없음'); process.exit(1) }
+  const shas = await prFileShas(repo, pr).catch((err) => {
+    console.error(`gh 실패 — ${err.message.split('\n')[0]}`)
+    process.exit(1)
+  })
+
+  const rows = []
+  for (const [path, sha] of shas) {
+    const file = d.files?.[path]
+    if (!file) { rows.push(['요약 없음', path]); continue }
+    if (!file.sha) { rows.push(['버전 모름', path]); continue }
+    if (file.sha !== sha) { rows.push(['바뀜', path]) }
+  }
+  for (const path of Object.keys(d.files || {})) {
+    if (!shas.has(path)) { rows.push(['PR 에서 빠짐', path]) }
+  }
+
+  if (!rows.length) { console.log('갱신할 요약 없음') }
+  for (const [why, path] of rows) { console.log(`${why}\t${path}`) }
 } else if (cmd === 'normalize') {
   // 저장 형식이 바뀌며 섞인 상태를 현재 규칙으로 맞춘다.
   // 규칙: 줄이 없으면 파일 메모(앵커 비움) / 줄이 있으면 앵커 해시를 다시 계산.

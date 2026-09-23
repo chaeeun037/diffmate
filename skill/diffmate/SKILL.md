@@ -37,7 +37,17 @@ re-reads every three seconds, so a late arrival still shows up while the reviewe
 Summaries are recorded even when the daemon is down — the CLI writes the file directly. The daemon is
 only needed for the extension to read it.
 
-When a later commit adds files, fill in the ones still missing a summary during the next answering round.
+Review commits make summaries stale. **Run `stale` at the start of every answering round and re-read
+only what it names.**
+
+```bash
+node $DIFFMATE/cli/notes.mjs stale <owner/repo> <pr>
+```
+
+It prints three kinds: `요약 없음` (a file with no summary), `바뀜` (a commit changed it), and
+`PR 에서 빠짐` (it left the PR). Anything it does not name is unchanged since the summary was written,
+so do not re-read it. If you rewrite the summary of a file that already carries an answered note,
+**say in one line on that card why it changed** — an earlier follow-up is quoting the old wording.
 
 ## 2. Writing a file summary
 
