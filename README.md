@@ -110,6 +110,16 @@ When it cannot be found, it is not dropped — it surfaces as an "orphan note" a
 - [Agent skill](skill/diffmate/SKILL.md) — how the agent writes summaries and answers
 - [Design notes](docs/ko/DESIGN.md) — structure and the reasoning behind it (Korean)
 
+## AI use
+
+This repo is developed with AI assistance (Claude Code), reviewed by the maintainer — most of the
+code, docs and commit messages started as drafts from an agent, and every change was read, tested
+and kept or rewritten by a person.
+
+Contributions made with AI tools are welcome too. Please mention it in your pull request — an
+`Assisted-by:` trailer is the convention this repo follows — and make sure you can explain every
+line you submit.
+
 ## License
 
 MIT
