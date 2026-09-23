@@ -151,6 +151,9 @@ echo 'It does not. _document is only rendered to a string on the server.' \
   | node $DIFFMATE/cli/notes.mjs answer <owner/repo> <pr> <noteId>
 ```
 
+- **Write to the reviewer.** Keep the vocabulary of your own workflow — role names, handoff numbers,
+  ticket states — out of the card. The reader does not know that structure and has no reason to.
+  Say **what changes**, not who you passed it to. If that matters, one clause covers it.
 - The card is narrow. **Three sentences at most**; past that, point at a file instead.
 - If you do not know, say so, and say what would settle it.
 - If the question rests on a wrong premise, correct the premise first.
