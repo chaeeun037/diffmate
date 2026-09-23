@@ -249,7 +249,8 @@ html[data-color-mode='dark'] {
 .dm-status button { border: 0; background: transparent; color: var(--dm-accent); cursor: pointer; font-size: 14px; padding: 0; }
 
 .dm-orphans { margin: 0 0 12px; padding: 8px 12px; border: 1px dashed var(--dm-accent); border-radius: var(--dm-radius); background: var(--dm-accent-soft); font-size: 13px; }
-.dm-orphans h4 { margin: 0 0 6px; font-size: 13px; color: var(--dm-accent); }
+.dm-orphans summary { cursor: pointer; font-size: 13px; color: var(--dm-accent); list-style-position: inside; }
+.dm-orphans[open] summary { margin-bottom: 6px; }
 .dm-orphans .dm-orphan { padding: 3px 0; }
 .dm-orphans code { font-size: 12px; opacity: 0.75; }
 

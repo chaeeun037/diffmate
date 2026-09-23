@@ -963,12 +963,16 @@
   }
 
   function renderOrphans(orphans) {
-    document.querySelector('.dm-orphans')?.remove()
+    // 3초마다 다시 그리므로, 펼쳐 둔 상태를 지우기 전에 읽어 둔다
+    const prev = document.querySelector('.dm-orphans')
+    const wasOpen = prev ? prev.open : false
+    prev?.remove()
     if (!orphans.length) { return }
 
-    const box = document.createElement('div')
+    const box = document.createElement('details')
     box.className = 'dm-orphans'
-    const h = document.createElement('h4')
+    box.open = wasOpen
+    const h = document.createElement('summary')
     h.textContent = `떠돌이 메모 ${orphans.length}개 — 이 화면에 그 파일이 없다`
     box.appendChild(h)
 
