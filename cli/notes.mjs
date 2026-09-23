@@ -4,6 +4,7 @@
 //   node notes-cli.mjs list [repo] [pr]                     메모 보기 (인자 없으면 전체 PR 요약)
 //   node notes-cli.mjs answer <repo> <pr> <noteId>          답변을 stdin 으로 받는다
 //   node notes-cli.mjs reply  <repo> <pr> <noteId>          되물음에 답글 달기 (stdin)
+//   node notes-cli.mjs edit   <repo> <pr> <noteId> <turn>   내가 쓴 답 고치기 (turn=자리번호|answer)
 //   node notes-cli.mjs summarize <repo> <pr>                {"path":{"summary","risk","order"}} 를 stdin 으로
 //   node notes-cli.mjs reanchor <repo> <pr> <noteId> <line> 새 줄 내용을 stdin 으로 (요청 처리 후)
 //   node notes-cli.mjs move <repo> <pr> <noteId> <새 경로>   파일을 잘못 찾아간 메모 옮기기
@@ -60,6 +61,24 @@ if (cmd === 'list' && !repo) {
   d.round = Math.max(d.round || 0, note.round || 0) + 0
   await write(repo, pr, d)
   console.log(`답변 기록: ${id}`)
+} else if (cmd === 'edit') {
+  // 내가 쓴 답을 고친다. <turn> 은 thread 의 0부터 센 자리, 'answer' 면 첫 답변.
+  const [id, turn] = rest
+  const text = await stdin()
+  const d = await read(repo, pr)
+  const note = d?.notes.find((n) => n.id === id)
+  if (!note) { console.error(`메모 없음: ${id}`); process.exit(1) }
+  if (turn === 'answer') {
+    note.answer = text
+  } else {
+    const i = Number(turn)
+    const entry = note.thread?.[i]
+    if (!entry) { console.error(`그 자리에 글이 없다: ${turn}`); process.exit(1) }
+    if (entry.by !== 'claude') { console.error('내가 쓴 것만 고친다'); process.exit(1) }
+    entry.body = text
+  }
+  await write(repo, pr, d)
+  console.log(`고침: ${id} ${turn}`)
 } else if (cmd === 'reply') {
   // 첫 답변 뒤에 이어지는 답글. 사용자가 되물은 것에 답할 때 쓴다.
   const [id] = rest
