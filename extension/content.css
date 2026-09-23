@@ -360,3 +360,7 @@ html[data-color-mode='dark'] {
   font-size: 11px;
   color: var(--dm-muted);
 }
+
+/* 떠돌이 패널 안 카드 */
+.dm-orphans .dm-card { position: static; width: auto; max-width: 560px; margin: 4px 0 12px; }
+.dm-orphans .dm-orphan { margin-top: 8px; }

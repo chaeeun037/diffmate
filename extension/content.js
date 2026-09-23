@@ -964,18 +964,27 @@
   function renderOrphans(orphans) {
     document.querySelector('.dm-orphans')?.remove()
     if (!orphans.length) { return }
+
     const box = document.createElement('div')
     box.className = 'dm-orphans'
     const h = document.createElement('h4')
     h.textContent = `떠돌이 메모 ${orphans.length}개 — 이 화면에 그 파일이 없다`
     box.appendChild(h)
-    for (const n of orphans) {
-      const row = document.createElement('div')
-      row.className = 'dm-orphan'
-      row.innerHTML = `<code>${n.path}:${n.line}</code> `
-      row.append(document.createTextNode(n.body))
-      box.appendChild(row)
+
+    for (const note of orphans) {
+      const where = document.createElement('div')
+      where.className = 'dm-orphan'
+      where.innerHTML = `<code>${note.path}${note.line ? `:${note.line}` : ''}</code>`
+      box.appendChild(where)
+
+      // 읽기만 되면 여기서 아무것도 못 한다. 카드로 그려서 수정·삭제·완료를 그 자리에서 하게 한다.
+      try {
+        box.appendChild(cardEl(note, { line: note.line, el: null }))
+      } catch (err) {
+        console.error('[diffmate] 떠돌이 카드 그리기 실패', note.id, err)
+      }
     }
+
     const anchor = document.querySelector('#files, .js-diff-progressive-container, main')
     anchor?.prepend(box)
   }
