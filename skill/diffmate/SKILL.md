@@ -63,7 +63,9 @@ What changed is already in the diff.
 In order: what you could not run → what fails silently, with no error, type check or test → what spreads
 beyond this file.
 
-**If the code already guards against it, it is not a thing to check.** Drop it from the list.
+**If the code already guards against it, it is not a thing to check.** Drop it from the list —
+open the code at that spot and look for the guard *before* listing a check. Skip that and you invent
+plausible risks (it happened twice).
 **If no if-wrong sentence can be written, lower the risk to `low` and write the label alone.** That is the
 default, not an escape hatch. "I could not run this" is worth more than an invented risk.
 
@@ -124,6 +126,19 @@ node $DIFFMATE/cli/notes.mjs list <owner/repo> <pr>  # the notes themselves
 ```
 
 Handle only the ones with `status: "open"`.
+
+### Read the spot before answering
+
+Every note carries `path`, `line` and `lineText`. **Open the code with those three, then answer.**
+
+1. Read that file's **summary** (the `files` block) — the answer is sometimes already written there
+2. Read the code around `line`; for a file-level note, read the part of the file it concerns
+3. Only then write the answer
+
+Skip this and you answer the question from general knowledge, which reads plausibly while missing the
+spot it was asked about. Two real cases: an answer that ignored the summary two lines above it, and a
+risk invented for code that already guarded against it. Nothing breaks — the answers just get quietly
+worse, which is why it goes unnoticed.
 
 | kind | What you do |
 | --- | --- |
