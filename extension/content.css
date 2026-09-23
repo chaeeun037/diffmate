@@ -16,6 +16,7 @@
   --dm-muted: #73726C;
   --dm-danger: #B53333;
   --dm-radius: 12px;
+  --dm-card-max: 560px;
 }
 /* 다크 토큰. 아래 미디어 쿼리 블록과 값이 같아야 한다 — 한쪽만 고치면 시스템 동기화에서 어긋난다 */
 html[data-color-mode='dark'] {
@@ -90,7 +91,7 @@ html[data-color-mode='dark'] {
   line-height: 1.6;
   overflow: hidden;
 }
-.dm-card.dm-inline { position: static; width: auto; max-width: 420px; margin: 4px 0; }
+.dm-card.dm-inline { position: static; width: auto; max-width: var(--dm-card-max); margin: 4px 0; }
 .dm-connector {
   position: fixed;
   height: 0;
@@ -153,7 +154,7 @@ html[data-color-mode='dark'] {
 
 /* ── 작성 폼 ───────────────────────────────────────────── */
 .dm-composer { position: fixed; width: 340px; z-index: 70; }
-.dm-composer.dm-inline { position: static; width: auto; max-width: 440px; margin: 4px 0; }
+.dm-composer.dm-inline { position: static; width: auto; max-width: var(--dm-card-max); margin: 4px 0; }
 .dm-composer .dm-card-head { background: var(--dm-card-band); color: var(--dm-muted); }
 .dm-composer .dm-kind-select {
   border: 1px solid var(--dm-card-border);
@@ -217,7 +218,7 @@ html[data-color-mode='dark'] {
   background: var(--dm-accent-soft);
   font-size: 14px;
   line-height: 1.6;
-  color: var(--dm-card-fg);
+  color: var(--dm-strong);
 }
 .dm-file-summary svg { flex: none; width: 20px; height: 20px; margin-top: 2px; }
 .dm-file-summary > span:last-child { white-space: pre-line; }
@@ -283,7 +284,7 @@ html[data-color-mode='dark'] {
 
 /* 줄을 못 찾은 메모를 파일 위에 그대로 펼칠 때 */
 .dm-stack { display: flex; flex-direction: column; gap: 8px; padding: 0 12px 12px; background: var(--dm-card-bg); }
-.dm-stack .dm-card { position: static; width: auto; max-width: 560px; }
+.dm-stack .dm-card { position: static; width: auto; max-width: var(--dm-card-max); }
 
 /* 파일 단위 메모 */
 .dm-logo-btn {
@@ -298,7 +299,7 @@ html[data-color-mode='dark'] {
 }
 .dm-logo-btn:hover { background: rgba(127, 127, 127, 0.14); }
 .dm-file-notes { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px; }
-.dm-file-notes .dm-card { position: static; width: auto; max-width: 560px; }
+.dm-file-notes .dm-card { position: static; width: auto; max-width: var(--dm-card-max); }
 
 /* 답을 보고 되묻는 답글 */
 .dm-reply-mine {
@@ -362,5 +363,5 @@ html[data-color-mode='dark'] {
 }
 
 /* 떠돌이 패널 안 카드 */
-.dm-orphans .dm-card { position: static; width: auto; max-width: 560px; margin: 4px 0 12px; }
+.dm-orphans .dm-card { position: static; width: auto; max-width: var(--dm-card-max); margin: 4px 0 12px; }
 .dm-orphans .dm-orphan { margin-top: 8px; }
