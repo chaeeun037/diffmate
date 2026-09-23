@@ -761,6 +761,12 @@
   }
 
   function cardEl(note, row) {
+    // 상태는 필드가 있느냐가 아니라 마지막에 누가 말했느냐로 가른다.
+    // answer 없이 thread 로만 답이 들어온 메모가 계속 "답변 대기"로 보였다.
+    const turns = note.thread || []
+    const lastSpeaker = turns.length ? turns[turns.length - 1].by : (note.answer ? 'claude' : 'me')
+    const answered = lastSpeaker === 'claude'
+
     const el = document.createElement('div')
     el.className = 'dm-card'
     el.addEventListener('keydown', (e) => e.stopPropagation())
@@ -808,7 +814,7 @@
     head.append(edit, del)
 
     const isResolved = note.status === 'resolved'
-    if (note.answer) {
+    if (answered || isResolved) {
       head.appendChild(iconButton(isResolved ? '다시 열기' : '완료', async () => {
         await api('PATCH', '/notes', {
           query: { repo: state.ctx.repo, pr: state.ctx.pr },
@@ -841,7 +847,6 @@
       el.appendChild(ans)
     }
 
-    const turns = note.thread || []
     // '수정' 은 마지막으로 내가 쓴 것을 고친다. 그 자리를 여기서 기억해 둔다.
     let mineIndex = -1
     let mineEl = body
@@ -853,8 +858,7 @@
       if (turn.by === 'me') { mineIndex = i; mineEl = line }
     })
 
-    const lastTurn = turns[turns.length - 1]
-    const waiting = note.kind !== 'memo' && (!note.answer || lastTurn?.by === 'me')
+    const waiting = note.kind !== 'memo' && !answered
     if (waiting) {
       const pending = document.createElement('div')
       pending.className = 'dm-pending'
@@ -862,7 +866,7 @@
       el.appendChild(pending)
     }
 
-    if (note.answer && !waiting) {
+    if (answered) {
       const foot = document.createElement('div')
       foot.className = 'dm-actions dm-foot'
       foot.appendChild(button('답글', () => startReply()))
