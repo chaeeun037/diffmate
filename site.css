@@ -22,7 +22,7 @@
   .tag { margin: 0 0 8px; font-size: 20px; color: var(--page-fg); }
   .sub { margin: 0; color: var(--page-muted); }
   h2 { margin: 56px 0 8px; font-size: 22px; color: var(--page-strong); letter-spacing: -0.01em; }
-  h2 + p { margin-top: 0; color: var(--page-muted); }
+  h2 + p { margin-top: 0; }
   .links { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; }
   .btn {
     display: inline-block; padding: 9px 18px; border-radius: 9999px;
@@ -83,3 +83,30 @@
 .file-head { font-weight: 500; }
 h2 + p b, .caption b { color: var(--page-strong); }
 header .tag b { color: var(--page-strong); }
+
+/* 브라우저 창 프레임 — 확장이 GitHub 위에 얹힌다는 걸 보여주는 액자 */
+.browser {
+  margin-top: 24px; border: 1px solid var(--page-line); border-radius: 12px;
+  background: var(--gh-gutter); overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.07);
+}
+.browser-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-bottom: 1px solid var(--page-line);
+}
+.dots { display: flex; gap: 6px; flex: none; }
+.dots i { display: block; width: 11px; height: 11px; border-radius: 9999px; background: var(--page-line); }
+.url {
+  flex: 1; min-width: 0; padding: 5px 12px; border-radius: 9999px;
+  background: var(--page-bg); border: 1px solid var(--page-line); color: var(--page-muted);
+  font: 12.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tools { display: flex; align-items: center; gap: 6px; flex: none; color: var(--page-muted); }
+.pin {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--page-bg); border: 1px solid var(--dm-accent);
+}
+.browser-body { padding: 14px; }
+.browser-body .stack { margin-top: 0; }

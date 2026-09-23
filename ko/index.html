@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>diffmate</title>
-<meta name="description" content="PR을 열면 파일마다 왜 봐야 하는지 한 줄로 보인다. 궁금하면 그 자리에서 클로드에게 묻는다.">
+<meta name="description" content="GitHub PR 파일 목록에 파일별 요약을 붙이고, 읽다가 궁금한 건 그 자리에 메모로 남겨 Claude Code에게 답을 받는 크롬 확장.">
 <link rel="stylesheet" href="../extension/content.css">
 <link rel="stylesheet" href="../site.css">
 </head>
@@ -13,42 +13,63 @@
 
 <header>
   <h1>diffmate</h1>
-  <p class="tag">PR을 열면 <b>파일마다 왜 봐야 하는지 한 줄</b>로 먼저 보인다.</p>
-  <p class="sub">궁금하면 그 자리에서 클로드에게 묻고, 답은 같은 줄 옆에 쌓인다. GitHub에는 아무것도 올라가지 않는다.</p>
+  <p class="tag">GitHub PR에 <b>파일별 요약</b>을 붙이고, 궁금한 건 그 줄에 메모로 남겨
+  <b>Claude Code</b>에게 답을 받는 크롬 확장.</p>
+  <p class="sub">쓰던 Claude Code를 그대로 쓴다. 전부 로컬에 저장되고 GitHub에는 안 올라간다.</p>
   <div class="links">
     <a class="btn" href="https://github.com/chaeeun037/diffmate">GitHub</a>
     <a class="btn ghost" href="../">English</a>
   </div>
 </header>
 
-<h2>파일마다 한 줄</h2>
-<p>변경 파일 목록을 훑는 것만으로 <b>어디부터 봐야 할지</b>가 정해진다. 파일 이름 아래 줄은 전부 확장이 그린 것이다.</p>
+<div class="browser">
+  <div class="browser-bar">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="url">github.com/chaeeun037/diffmate/pull/12/changes</span>
+    <span class="tools">
+      <span class="puzzle" aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor"><path d="M6 1.5a1.75 1.75 0 0 1 3.5 0V2H11a1 1 0 0 1 1 1v1.5h.5a1.75 1.75 0 0 1 0 3.5H12V11a1 1 0 0 1-1 1H9.5v-.5a1.75 1.75 0 0 0-3.5 0v.5H4.5a1 1 0 0 1-1-1V9.5H3a1.75 1.75 0 0 1 0-3.5h.5V4.5a1 1 0 0 1 1-1H6z"/></svg></span>
+      <span class="pin" title="diffmate"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+    </span>
+  </div>
+  <div class="browser-body">
+  <div class="stack">
+    <div class="file">
+      <div class="file-head">▾ src/lib/retryFetch.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-high">● 중요</span>
+        <span>재시도 래퍼에 최대 횟수를 붙였다. 멈추는 조건이 틀리면 실패한 요청이 탭 닫을 때까지 반복된다.</span>
+      </div>
+      <table class="diff">
+        <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
+        <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
+        <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
+        <tr class="note-row"><td colspan="3">
+          <div class="dm-card dm-inline">
+            <div class="dm-card-head">
+              <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+              <span class="dm-kind">질문</span><span>L14</span>
+              <span class="dm-spacer"></span>
+              <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
+            </div>
+            <div class="dm-body">재귀 말고 반복문 쓴 이유가 뭐야? 이러면 호출한 쪽이 멈춰 있는 거 아냐?</div>
+            <div class="dm-answer">안 멈춘다. 시도마다 기다리니까 그 사이에 다른 일이 돈다. 재귀로 하면 재시도 한 번에 호출 기록이 한 겹씩 쌓여서, 실패했을 때 원래 오류가 그 밑에 묻힌다.</div>
+            <div class="dm-actions dm-foot"><button class="dm-btn" type="button">답글</button></div>
+          </div>
+        </td></tr>
+        <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
+      </table>
+    </div>
 
-<div class="stack">
-    <div class="file">
-      <div class="file-head">▸ src/lib/retryFetch.ts</div>
-      <div class="dm-file-summary">
-        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-high">● 중요</span>
-        <span>모든 API 요청이 거쳐 가는 재시도 래퍼. 멈추는 조건이 틀리면 실패한 요청이 탭을 닫을 때까지 반복된다.</span>
-      </div>
-    </div>
-    <div class="file">
-      <div class="file-head">▸ src/pages/_document.tsx</div>
-      <div class="dm-file-summary">
-        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-high">● 중요</span>
-        <span>모든 페이지 HTML에 심는 '측정 시작' 신호. 맨 윗줄 주소 검사가 틀리면 엉뚱한 페이지에서도 로그가 나간다.</span>
-      </div>
-    </div>
     <div class="file">
       <div class="file-head">▸ src/hooks/useSession.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
         <span class="dm-risk dm-risk-mid">● 보통</span>
-        <span>로그인 상태를 읽는 훅. 첫 렌더에 값이 undefined라 그대로 분기하면 로그아웃 화면이 한 번 깜빡인다.</span>
+        <span>로그인 상태 읽는 훅을 고쳤다. 첫 렌더에 값이 undefined라 그대로 분기하면 로그아웃 화면이 깜빡인다.</span>
       </div>
     </div>
+
     <div class="file">
       <div class="file-head">▸ src/constants/LogType.ts</div>
       <div class="dm-file-summary">
@@ -57,65 +78,69 @@
         <span>로그 이름 3개 등록.</span>
       </div>
     </div>
+  </div>
+  </div>
 </div>
 
-<p class="caption">무엇이 바뀌었는지는 쓰지 않는다 — 그건 diff가 이미 보여준다. 대신 <b>틀렸을 때 무엇이 깨지는지</b>를 쓰고, 번지는 범위에 따라 중요·보통·훑기로 나눈다.</p>
+<h2>기능</h2>
 
-<h2>왜 필요했나</h2>
-<p>
-AI가 쓴 코드를 검수할 때, diff만 봐서는 <b>어느 파일이 중요한지 알 수 없다</b>.
-파일은 경로순으로 늘어서 있고, 한 줄짜리 상수 추가와 전 페이지에 영향을 주는 코드가 나란히 보인다.
-PR 본문에 길게 써두면 정작 코드를 볼 때는 화면 위쪽 멀리 있어서 아무도 다시 올라가지 않는다.
-</p>
-<p>그래서 설명을 <b>코드 옆으로 옮겼다</b>. 읽기 시작하기 전에 지도가 먼저 깔린다.</p>
-
-<h2>읽다가 막히면 그 자리에서 묻는다</h2>
-<p>
-줄에 마우스를 올리면 버튼이 뜬다. 눌러서 물으면 클로드가 <b>같은 자리에</b> 답한다. 되물으면 같은 카드에 쌓인다.
-</p>
+<p><b>파일 요약</b> — 변경 파일마다 한 줄. 뭘 바꿨는지와 그게 틀리면 뭐가 깨지는지를 같이 쓴다.
+옆의 표시는 틀렸을 때 번지는 범위다(중요·보통·훑기). GitHub은 파일을 경로순으로 늘어놓아서
+위험한 파일이 맨 아래 깔리는데, 목록만 훑어도 어디부터 볼지 정해진다.</p>
 
 <div class="file">
-  <div class="file-head">▾ src/lib/retryFetch.ts</div>
+  <div class="file-head">▸ src/api/client.ts</div>
+  <div class="dm-file-summary">
+    <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+    <span class="dm-risk dm-risk-high">● 중요</span>
+    <span>토큰 갱신을 인터셉터로 옮겼다. 갱신이 실패했는데 원래 요청을 다시 보내면 무한 재시도가 된다.</span>
+  </div>
+</div>
+
+<p><b>메모</b> — 줄에 마우스를 올리면 버튼이 뜬다. 눌러서 쓰면 그 줄에 카드가 붙고,
+답과 되물음이 같은 카드에 쌓인다. 남한테 보이는 건 GitHub 코멘트를 쓰면 되고,
+이건 나랑 클로드 사이라 아무도 안 본다.</p>
+
+<div class="file">
+  <div class="file-head">▾ src/api/client.ts</div>
   <table class="diff">
-    <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
+    <tr class="add"><td class="num"></td><td class="num">42</td><td class="code">    if (!refreshed) return Promise.reject(error);</td></tr>
     <tr class="note-row"><td colspan="3">
-      <div class="dm-card dm-inline" style="max-width:520px">
+      <div class="dm-card dm-inline">
         <div class="dm-card-head">
           <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-          <span class="dm-kind">질문</span><span>L14</span>
+          <span class="dm-kind">질문</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
         </div>
-        <div class="dm-body">재귀 말고 반복문을 쓴 이유가 뭐야? 이러면 호출한 쪽이 멈춰 있는 거 아냐?</div>
-        <div class="dm-answer">안 멈춘다. 시도마다 기다리기 때문에 그 사이에 다른 일이 돈다. 재귀로 하면 재시도 한 번에 호출 기록이 한 겹씩 쌓여서, 실패했을 때 원래 오류가 그 밑에 묻힌다.</div>
-        <div class="dm-reply-mine">알겠음. 그럼 멈추게 하는 건 최대 시도 횟수뿐이야?</div>
-        <div class="dm-answer">그것과 호출할 때 넘기는 취소 신호 둘이다. 둘 다 없으면 최대 시도 횟수만 남는다.</div>
+        <div class="dm-body">갱신 실패하면 그냥 튕기는 거야? 쓰던 입력은 어떻게 돼?</div>
+        <div class="dm-answer">사라진다. 갱신 실패는 로그아웃으로 처리해서 로그인 화면으로 보낸다. 입력을 살리려면 임시 저장이 따로 필요한데 이번 범위는 아니다.</div>
         <div class="dm-actions dm-foot"><button class="dm-btn" type="button">답글</button></div>
+        <textarea rows="2">임시 저장은 이번에 안 해도 되는 거 맞지? 티켓만 남기자.</textarea>
+        <div class="dm-actions">
+          <span class="dm-hint">⌘Enter 저장</span>
+          <button class="dm-btn" type="button">취소</button>
+          <button class="dm-btn dm-btn-primary" type="button">저장</button>
+        </div>
       </div>
     </td></tr>
-    <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
   </table>
 </div>
 
-<p class="caption">
-<b>GitHub 코멘트를 대신하려는 게 아니다.</b> 남에게 보이는 코멘트는 GitHub이 맡는다.
-이건 나만 보이고, 답하는 쪽이 사람이 아니라 내가 쓰는 AI다. 그래서 "이게 왜 이래?" 같은 걸 편하게 물을 수 있다.
-</p>
+<h2>구조</h2>
+<p>확장이 클로드와 직접 통신하지는 않는다. 사이에 로컬 파일과 터미널이 있다.</p>
 
-<h2>세 단계로 돈다</h2>
+<pre class="sh">브라우저(확장)  ──저장──▶  ~/.diffmate/&lt;레포&gt;/&lt;PR번호&gt;.json
+                                    │  ▲
+                                    ▼  │  CLI로 읽고 쓴다
+                          터미널의 Claude Code
+                          "파일 요약 채워줘" / "메모 답변 달아줘"</pre>
+
 <ol class="steps">
-  <li><b>클로드가 먼저 깔아둔다.</b> PR을 올린 직후 파일마다 한 줄을 채운다. 내가 화면을 열면 이미 깔려 있다.</li>
-  <li><b>읽다가 묻는다.</b> 줄에 마우스를 올리고 버튼을 눌러 쓴다. 메모는 내 컴퓨터의 파일에만 저장된다.</li>
-  <li><b>같은 자리에 답이 온다.</b> 클로드에게 "메모 답변 달아줘"라고 하면 카드에 답이 붙는다. 새로고침하지 않아도 뜬다.</li>
+  <li><b>요약 채우기</b> — PR을 올린 뒤 터미널에서 Claude Code에게 시킨다. 파일마다 한 줄이 json에 들어가고, 브라우저를 열면 붙어 있다.</li>
+  <li><b>메모 쓰기</b> — 브라우저에서 쓰면 같은 json에 저장된다.</li>
+  <li><b>답 받기</b> — 터미널로 가서 "메모 답변 달아줘"라고 한다. 답이 json에 들어가고 브라우저 카드에 뜬다. 새로고침은 필요 없다(3초마다 다시 읽는다).</li>
 </ol>
-
-<h2>설치</h2>
-<pre class="sh">git clone https://github.com/chaeeun037/diffmate.git
-cd diffmate
-npm start          # 로컬 데몬 127.0.0.1:7777</pre>
-<p class="caption">그다음 크롬에서 <code>chrome://extensions</code> → 개발자 모드 → <b>압축해제된 확장 프로그램을 로드</b> → <code>extension/</code> 선택. Node 18 이상이면 되고 의존성은 없다.</p>
 
 <footer>
   MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · 이슈는 한국어로 남겨도 된다.

@@ -6,6 +6,10 @@ Leave **private notes** on a GitHub pull request diff, and have an **AI agent an
 
 Nothing is posted to GitHub. Notes live on your machine only — nobody else sees them, even on the same PR.
 
+![A pull request with a summary line under every filename and a note answered inline](docs/img/demo.png)
+
+<sup>Rendered from the demo page with sample code — real reviews happen on private repositories.</sup>
+
 ```
   ⓪ the agent fills in a one-line summary per file
         │

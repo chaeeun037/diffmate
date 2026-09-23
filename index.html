@@ -4,51 +4,77 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>diffmate</title>
-<meta name="description" content="Open a pull request and every file already says why it is worth your attention. Ask Claude right there when it is not enough.">
+<meta name="description" content="A Chrome extension that puts one line per file on a GitHub pull request, and answers the notes you leave on a line through Claude Code.">
 <link rel="stylesheet" href="extension/content.css">
 <link rel="stylesheet" href="site.css">
+<style>
+  /* 확장 UI 자체는 한국어다. 영어 페이지에서는 화자 라벨만 영어로 보여준다 */
+  .dm-body::before, .dm-reply-mine::before { content: 'me'; }
+  .dm-answer::before { content: 'Claude'; }
+</style>
 </head>
 <body>
 <div class="wrap">
 
 <header>
   <h1>diffmate</h1>
-  <p class="tag">Open a pull request and <b>every changed file already carries one line</b> telling you why it matters.</p>
-  <p class="sub">When that is not enough, ask Claude right there — the answer lands next to the same line. Nothing is posted to GitHub.</p>
+  <p class="tag">A Chrome extension that puts <b>one line on every file</b> of a GitHub pull request, and answers
+  the notes you leave on a line through <b>Claude Code</b>.</p>
+  <p class="sub">It drives the Claude Code you already run. Everything stays on your machine, and nothing is posted to GitHub.</p>
   <div class="links">
     <a class="btn" href="https://github.com/chaeeun037/diffmate">GitHub</a>
     <a class="btn ghost" href="ko/">한국어</a>
   </div>
 </header>
 
-<h2>One line per file</h2>
-<p>Skimming the file list is enough to decide <b>where to start</b>. Every line under a filename is drawn by the extension.</p>
+<div class="browser">
+  <div class="browser-bar">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="url">github.com/chaeeun037/diffmate/pull/12/changes</span>
+    <span class="tools">
+      <span class="puzzle" aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor"><path d="M6 1.5a1.75 1.75 0 0 1 3.5 0V2H11a1 1 0 0 1 1 1v1.5h.5a1.75 1.75 0 0 1 0 3.5H12V11a1 1 0 0 1-1 1H9.5v-.5a1.75 1.75 0 0 0-3.5 0v.5H4.5a1 1 0 0 1-1-1V9.5H3a1.75 1.75 0 0 1 0-3.5h.5V4.5a1 1 0 0 1 1-1H6z"/></svg></span>
+      <span class="pin" title="diffmate"><span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span></span>
+    </span>
+  </div>
+  <div class="browser-body">
+  <div class="stack">
+    <div class="file">
+      <div class="file-head">▾ src/lib/retryFetch.ts</div>
+      <div class="dm-file-summary">
+        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+        <span class="dm-risk dm-risk-high">● high</span>
+        <span>Added an attempt limit to the retry wrapper. Get the stop condition wrong and a failed request repeats until the tab closes.</span>
+      </div>
+      <table class="diff">
+        <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
+        <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
+        <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
+        <tr class="note-row"><td colspan="3">
+          <div class="dm-card dm-inline">
+            <div class="dm-card-head">
+              <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+              <span class="dm-kind">question</span><span>L14</span>
+              <span class="dm-spacer"></span>
+              <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
+            </div>
+            <div class="dm-body">Why a loop instead of recursion? Doesn't this block the caller?</div>
+            <div class="dm-answer">It does not. Every attempt awaits, so other work runs in between. Recursion adds a stack frame per retry, and the original error ends up buried under them.</div>
+            <div class="dm-actions dm-foot"><button class="dm-btn" type="button">reply</button></div>
+          </div>
+        </td></tr>
+        <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
+      </table>
+    </div>
 
-<div class="stack">
-    <div class="file">
-      <div class="file-head">▸ src/lib/retryFetch.ts</div>
-      <div class="dm-file-summary">
-        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-high">● high</span>
-        <span>Retry wrapper every API call goes through. If the stop condition is wrong, a failed request repeats until the tab is closed.</span>
-      </div>
-    </div>
-    <div class="file">
-      <div class="file-head">▸ src/pages/_document.tsx</div>
-      <div class="dm-file-summary">
-        <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-high">● high</span>
-        <span>Beacon injected into every page. If the path check on the first line is wrong, unrelated pages fire the log too.</span>
-      </div>
-    </div>
     <div class="file">
       <div class="file-head">▸ src/hooks/useSession.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
         <span class="dm-risk dm-risk-mid">● medium</span>
-        <span>Hook that reads the session. The value is undefined on first render, so branching on it flashes the logged-out screen.</span>
+        <span>Reworked the hook that reads the session. The value is undefined on first render, so branching on it flashes the logged-out screen.</span>
       </div>
     </div>
+
     <div class="file">
       <div class="file-head">▸ src/constants/LogType.ts</div>
       <div class="dm-file-summary">
@@ -57,65 +83,69 @@
         <span>Registers three log names.</span>
       </div>
     </div>
+  </div>
+  </div>
 </div>
 
-<p class="caption">It never says what changed — the diff already shows that. It says <b>what breaks if this is wrong</b>, ranked by how far the damage spreads.</p>
+<h2>Features</h2>
 
-<h2>Why this exists</h2>
-<p>
-Reviewing AI-written code from a diff alone, you cannot tell <b>which file matters</b>.
-Files are listed by path, so a one-line constant sits next to something that touches every page.
-Write it up in the pull request description and it ends up far above the fold, where nobody scrolls back to.
-</p>
-<p>So the explanation moved <b>next to the code</b>. The map is in place before you start reading.</p>
-
-<h2>Ask where you got stuck</h2>
-<p>
-Hover a line and a button appears. Ask, and Claude answers <b>in the same place</b>. Push back and it stacks on the same card.
-</p>
+<p><b>File summaries</b> — one line per changed file. It says what you changed and what breaks if it is wrong.
+The marker beside it is how far the damage spreads (high, medium, skim). GitHub lists files by path, so the
+risky one often sits at the very bottom; skimming the list is enough to decide where to start.</p>
 
 <div class="file">
-  <div class="file-head">▾ src/lib/retryFetch.ts</div>
+  <div class="file-head">▸ src/api/client.ts</div>
+  <div class="dm-file-summary">
+    <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+    <span class="dm-risk dm-risk-high">● high</span>
+    <span>Moved token refresh into the interceptor. If refresh fails and the original request is sent again, it retries forever.</span>
+  </div>
+</div>
+
+<p><b>Notes</b> — hover a line and a button appears. Click it, type, and a card attaches to that line;
+answers and follow-ups stack on the same card. Anything other people should see belongs in a GitHub
+comment — this one is between you and Claude, and nobody else sees it.</p>
+
+<div class="file">
+  <div class="file-head">▾ src/api/client.ts</div>
   <table class="diff">
-    <tr class="hunk"><td class="num">…</td><td class="num"></td><td class="code">@@ -12,6 +12,14 @@</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
-    <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
+    <tr class="add"><td class="num"></td><td class="num">42</td><td class="code">    if (!refreshed) return Promise.reject(error);</td></tr>
     <tr class="note-row"><td colspan="3">
-      <div class="dm-card dm-inline" style="max-width:520px">
+      <div class="dm-card dm-inline">
         <div class="dm-card-head">
           <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-          <span class="dm-kind">question</span><span>L14</span>
+          <span class="dm-kind">question</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
         </div>
-        <div class="dm-body">Why a loop instead of recursion? Doesn't this block the caller?</div>
-        <div class="dm-answer">It does not. Every attempt awaits, so other work runs in between. Recursion would add a stack frame per retry, and the original error would end up buried under them.</div>
-        <div class="dm-reply-mine">Got it. So the attempt limit is the only thing stopping it?</div>
-        <div class="dm-answer">That and the abort signal you pass in. With neither set, the attempt limit is all that is left.</div>
+        <div class="dm-body">So it just bails when refresh fails? What happens to whatever I was typing?</div>
+        <div class="dm-answer">It is gone. A failed refresh is treated as a logout and sends you to the login screen. Keeping the input would need a draft store, which is out of scope here.</div>
         <div class="dm-actions dm-foot"><button class="dm-btn" type="button">reply</button></div>
+        <textarea rows="2">Drafts are out of scope for this one, right? Let's just file a ticket.</textarea>
+        <div class="dm-actions">
+          <span class="dm-hint">⌘Enter to save</span>
+          <button class="dm-btn" type="button">cancel</button>
+          <button class="dm-btn dm-btn-primary" type="button">save</button>
+        </div>
       </div>
     </td></tr>
-    <tr class="add"><td class="num"></td><td class="num">15</td><td class="code">    const res = await fetch(url, init);</td></tr>
   </table>
 </div>
 
-<p class="caption">
-<b>This is not a replacement for GitHub comments.</b> Anything other people should see belongs there.
-These are yours alone, and the one answering is your AI rather than a colleague — which makes "wait, why is this like this?" an easy thing to ask.
-</p>
+<h2>How it works</h2>
+<p>The extension never talks to Claude directly. A local file and your terminal sit in between.</p>
 
-<h2>Three steps</h2>
+<pre class="sh">Browser (extension)  ──writes──▶  ~/.diffmate/&lt;repo&gt;/&lt;pr&gt;.json
+                                        │  ▲
+                                        ▼  │  read and written through the CLI
+                              Claude Code in your terminal
+                              "fill in the file summaries" / "answer my notes"</pre>
+
 <ol class="steps">
-  <li><b>Claude goes first.</b> Right after the pull request opens, it fills in one line per file. By the time you open the page it is already there.</li>
-  <li><b>Ask as you read.</b> Hover a line, click the button, type. Notes are saved to a file on your machine and nowhere else.</li>
-  <li><b>Answers land in place.</b> Ask Claude to answer your notes and they appear on the cards — no refresh needed.</li>
+  <li><b>Fill the summaries</b> — right after opening the pull request, ask Claude Code in your terminal. One line per file goes into the json, and it is already there when you open the browser.</li>
+  <li><b>Leave notes</b> — written in the browser, saved to the same json.</li>
+  <li><b>Get answers</b> — go back to the terminal and say "answer my notes". The answers go into the json and show up on the cards. No refresh needed — it re-reads every three seconds.</li>
 </ol>
-
-<h2>Install</h2>
-<pre class="sh">git clone https://github.com/chaeeun037/diffmate.git
-cd diffmate
-npm start          # local daemon on 127.0.0.1:7777</pre>
-<p class="caption">Then in Chrome: <code>chrome://extensions</code> → Developer mode → <b>Load unpacked</b> → pick <code>extension/</code>. Node 18+, no dependencies.</p>
 
 <footer>
   MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · Issues in Korean or English are both welcome.
