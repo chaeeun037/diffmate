@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "diffmate",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "GitHub PR diff 위에 클로드에게 남기는 로컬 메모. GitHub에는 아무것도 올라가지 않는다.",
   "permissions": [
     "storage"
