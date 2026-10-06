@@ -6,6 +6,9 @@ Leave **private notes** on a GitHub pull request diff, and have an **AI agent an
 
 Nothing is posted to GitHub. Notes live on your machine only — nobody else sees them, even on the same PR.
 
+On the page you also get a changed-files tree with each file's risk and note count, cards badged by kind
+(question / request / memo) and by whether they are answered, and `⌥J` / `⌥K` to jump between notes.
+
 ![A pull request with a summary line under every filename and a note answered inline](docs/img/demo.png)
 
 <sup>Rendered from the demo page with sample code — real reviews happen on private repositories.</sup>
@@ -52,7 +55,8 @@ Node 18+. No dependencies.
 **Leave a note** — hover a diff line; a button appears left of the line number. Click and type.
 
 - `⌘Enter` to save, `Esc` to cancel
-- Three kinds: `question` (answer only), `request` (change the code), `memo` (agent leaves it alone)
+- Three kinds: `question` (answer only), `request` (change the code), `memo` (agent leaves it alone).
+  Each card shows its kind, and questions and requests also show `answered` / `unanswered`
 - Clicking the logo in a file's summary banner creates a **file-level note** that is not tied to any line
 - `⌥J` / `⌥K` jump to the next / previous note (ignored while typing)
 

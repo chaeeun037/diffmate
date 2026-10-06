@@ -1,6 +1,6 @@
 {
   "name": "diffmate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Private notes on GitHub PR diffs, answered in place by an AI agent",
   "type": "module",
   "license": "MIT",

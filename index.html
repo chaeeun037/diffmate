@@ -11,6 +11,8 @@
   /* 확장 UI 자체는 한국어다. 영어 페이지에서는 화자 라벨만 영어로 보여준다 */
   .dm-body::before, .dm-reply-mine::before { content: 'me'; }
   .dm-answer::before { content: 'Claude'; }
+  .badge-demo { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .badge-demo .dm-card { margin: 0; }
 </style>
 </head>
 <body>
@@ -37,6 +39,20 @@
     </span>
   </div>
   <div class="browser-body">
+  <details class="dm-tree" open>
+    <summary>4 changed files</summary>
+    <div class="dm-tree-list">
+      <div class="dm-tree-dir" style="padding-left: 0px;">.github/workflows/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 14px;" title=".github/workflows/ci.yml"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">ci.yml</span></button>
+      <div class="dm-tree-dir" style="padding-left: 0px;">src/</div>
+      <div class="dm-tree-dir" style="padding-left: 14px;">constants/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/constants/LogType.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">LogType.ts</span></button>
+      <div class="dm-tree-dir" style="padding-left: 14px;">hooks/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span></button>
+      <div class="dm-tree-dir" style="padding-left: 14px;">lib/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/lib/retryFetch.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">retryFetch.ts</span><span class="dm-tree-count">1 note</span></button>
+    </div>
+  </details>
   <div class="stack">
     <div class="file">
       <div class="file-head">▾ src/lib/retryFetch.ts</div>
@@ -50,10 +66,10 @@
         <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
         <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
         <tr class="note-row"><td colspan="3">
-          <div class="dm-card dm-inline">
+          <div class="dm-card dm-inline dm-kind-question">
             <div class="dm-card-head">
               <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-              <span class="dm-kind">question</span><span>L14</span>
+              <span class="dm-kind">question</span><span class="dm-state dm-state-answered">answered</span><span>L14</span>
               <span class="dm-spacer"></span>
               <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
             </div>
@@ -70,7 +86,7 @@
       <div class="file-head">▸ src/hooks/useSession.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-mid">● medium</span>
+        <span class="dm-risk dm-risk-mid">◐ medium</span>
         <span>Reworked the hook that reads the session. The value is undefined on first render, so branching on it flashes the logged-out screen.</span>
       </div>
     </div>
@@ -111,10 +127,10 @@ comment — this one is between you and Claude, and nobody else sees it.</p>
   <table class="diff">
     <tr class="add"><td class="num"></td><td class="num">42</td><td class="code">    if (!refreshed) return Promise.reject(error);</td></tr>
     <tr class="note-row"><td colspan="3">
-      <div class="dm-card dm-inline">
+      <div class="dm-card dm-inline dm-kind-question">
         <div class="dm-card-head">
           <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-          <span class="dm-kind">question</span><span>L42</span>
+          <span class="dm-kind">question</span><span class="dm-state dm-state-answered">answered</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
         </div>
@@ -131,6 +147,43 @@ comment — this one is between you and Claude, and nobody else sees it.</p>
     </td></tr>
   </table>
 </div>
+
+<p><b>Changed-files tree</b> — a tree of every changed file sits above the list, each with its risk marker
+(● high, ◐ medium, ○ skim) and how many notes it has. Folders with a single child fold into one row, the way
+GitHub does it. Click a file to jump to it. Fold the panel away and it stays folded next time.</p>
+
+<p><b>Kinds and answers at a glance</b> — every card is badged with what it is (question, request, memo)
+and, for questions and requests, whether Claude has answered yet. Memos are just for you, so they get no answer badge.</p>
+
+<div class="badge-demo">
+  <div class="dm-card dm-inline dm-kind-question">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">question</span><span class="dm-state dm-state-open">unanswered</span><span>L42</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">Does this still catch a 401 from the refresh call itself?</div>
+  </div>
+  <div class="dm-card dm-inline dm-kind-request">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">request</span><span class="dm-state dm-state-answered">answered</span><span>L18–24</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">Pull the retry delay out into a constant.</div>
+  </div>
+  <div class="dm-card dm-inline dm-kind-memo">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">memo</span><span>file</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">Compare with how the mobile app handles this later.</div>
+  </div>
+</div>
+
+<p><b>Jump between notes</b> — <code>⌥J</code> goes to the next note on the page and <code>⌥K</code> to the previous one.
+The card you land on flashes for a moment. While you are typing in a note the keys are left alone.</p>
 
 <h2>How it works</h2>
 <p>The extension never talks to Claude directly. A local file and your terminal sit in between.</p>

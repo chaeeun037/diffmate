@@ -7,6 +7,10 @@
 <meta name="description" content="GitHub PR 파일 목록에 파일별 요약을 붙이고, 읽다가 궁금한 건 그 자리에 메모로 남겨 Claude Code에게 답을 받는 크롬 확장.">
 <link rel="stylesheet" href="../extension/content.css">
 <link rel="stylesheet" href="../site.css">
+<style>
+  .badge-demo { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .badge-demo .dm-card { margin: 0; }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -32,6 +36,20 @@
     </span>
   </div>
   <div class="browser-body">
+  <details class="dm-tree" open>
+    <summary>바뀐 파일 4개</summary>
+    <div class="dm-tree-list">
+      <div class="dm-tree-dir" style="padding-left: 0px;">.github/workflows/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 14px;" title=".github/workflows/ci.yml"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">ci.yml</span></button>
+      <div class="dm-tree-dir" style="padding-left: 0px;">src/</div>
+      <div class="dm-tree-dir" style="padding-left: 14px;">constants/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/constants/LogType.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">LogType.ts</span></button>
+      <div class="dm-tree-dir" style="padding-left: 14px;">hooks/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span></button>
+      <div class="dm-tree-dir" style="padding-left: 14px;">lib/</div>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/lib/retryFetch.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">retryFetch.ts</span><span class="dm-tree-count">메모 1</span></button>
+    </div>
+  </details>
   <div class="stack">
     <div class="file">
       <div class="file-head">▾ src/lib/retryFetch.ts</div>
@@ -45,10 +63,10 @@
         <tr class="add"><td class="num"></td><td class="num">13</td><td class="code">  let attempt = 0;</td></tr>
         <tr class="add"><td class="num"></td><td class="num">14</td><td class="code">  while (attempt &lt; MAX_ATTEMPTS) {</td></tr>
         <tr class="note-row"><td colspan="3">
-          <div class="dm-card dm-inline">
+          <div class="dm-card dm-inline dm-kind-question">
             <div class="dm-card-head">
               <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-              <span class="dm-kind">질문</span><span>L14</span>
+              <span class="dm-kind">질문</span><span class="dm-state dm-state-answered">답변됨</span><span>L14</span>
               <span class="dm-spacer"></span>
               <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
             </div>
@@ -65,7 +83,7 @@
       <div class="file-head">▸ src/hooks/useSession.ts</div>
       <div class="dm-file-summary">
         <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-        <span class="dm-risk dm-risk-mid">● 보통</span>
+        <span class="dm-risk dm-risk-mid">◐ 보통</span>
         <span>로그인 상태 읽는 훅을 고쳤다. 첫 렌더에 값이 undefined라 그대로 분기하면 로그아웃 화면이 깜빡인다.</span>
       </div>
     </div>
@@ -106,10 +124,10 @@
   <table class="diff">
     <tr class="add"><td class="num"></td><td class="num">42</td><td class="code">    if (!refreshed) return Promise.reject(error);</td></tr>
     <tr class="note-row"><td colspan="3">
-      <div class="dm-card dm-inline">
+      <div class="dm-card dm-inline dm-kind-question">
         <div class="dm-card-head">
           <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
-          <span class="dm-kind">질문</span><span>L42</span>
+          <span class="dm-kind">질문</span><span class="dm-state dm-state-answered">답변됨</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
         </div>
@@ -126,6 +144,43 @@
     </td></tr>
   </table>
 </div>
+
+<p><b>바뀐 파일 트리</b> — 파일 목록 위에 바뀐 파일 전체가 트리로 뜬다. 파일마다 위험 표시(● 중요 · ◐ 보통 · ○ 훑기)와
+메모 개수가 붙고, 하위 폴더가 하나뿐인 폴더는 GitHub처럼 한 줄로 합친다. 파일을 누르면 그 자리로 간다.
+접어 두면 다음에 열어도 접혀 있다.</p>
+
+<p><b>종류와 답변 여부</b> — 카드마다 질문·요청·메모 중 뭔지 표시가 붙고, 질문과 요청에는 클로드가 답했는지도 붙는다.
+메모는 나만 보려고 남기는 거라 답변 표시가 없다.</p>
+
+<div class="badge-demo">
+  <div class="dm-card dm-inline dm-kind-question">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">질문</span><span class="dm-state dm-state-open">미답변</span><span>L42</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">갱신 요청 자체가 401로 떨어지면 이것도 잡혀?</div>
+  </div>
+  <div class="dm-card dm-inline dm-kind-request">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">요청</span><span class="dm-state dm-state-answered">답변됨</span><span>L18–24</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">재시도 간격을 상수로 빼줘.</div>
+  </div>
+  <div class="dm-card dm-inline dm-kind-memo">
+    <div class="dm-card-head">
+      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <span class="dm-kind">메모</span><span>파일</span>
+      <span class="dm-spacer"></span>
+    </div>
+    <div class="dm-body">나중에 앱은 이걸 어떻게 처리하는지 비교해 보기.</div>
+  </div>
+</div>
+
+<p><b>메모 사이 이동</b> — <code>⌥J</code>는 다음 메모, <code>⌥K</code>는 이전 메모로 간다. 도착한 카드가 잠깐 반짝인다.
+메모를 쓰는 중에는 이 키를 가로채지 않는다.</p>
 
 <h2>구조</h2>
 <p>확장이 클로드와 직접 통신하지는 않는다. 사이에 로컬 파일과 터미널이 있다.</p>
