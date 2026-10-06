@@ -13,13 +13,13 @@ s = pathlib.Path('index.html').read_text()
 head = s.split('<body>')[0]
 frame = re.search(r'<div class="browser">.*?\n</div>\n', s, re.S).group(0)
 pathlib.Path('_shot.html').write_text(
-    head + '<body style="padding:24px; background:var(--page-bg)">\n'
+    head + '<body style="padding:24px; background:#fff">\n'
     '<div style="max-width:880px; margin:0 auto">\n' + frame + '</div>\n</body>\n</html>\n')
 PY
 
 mkdir -p docs/img
 "$CHROME" --headless --disable-gpu --hide-scrollbars \
-  --force-device-scale-factor=2 --window-size=940,1400 \
+  --force-device-scale-factor=2 --window-size=940,1290 \
   --screenshot=docs/img/demo.png "file://$PWD/_shot.html" 2>/dev/null
 rm -f _shot.html
 echo "docs/img/demo.png"
