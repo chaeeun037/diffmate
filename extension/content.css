@@ -395,7 +395,7 @@ html[data-color-mode='dark'] {
 .dm-summary-top { display: block; width: 100%; }
 
 /* 바뀐 파일 트리 */
-.dm-tree { margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--borderColor-default, var(--dm-card-border)); border-radius: var(--dm-radius); background: var(--bgColor-muted, #f6f8fa); color: var(--fgColor-default, var(--dm-card-fg)); font-size: 13px; }
+details.dm-tree { margin: 0 0 16px; padding: 12px 16px; border: 1px solid var(--borderColor-default, var(--dm-card-border)); border-radius: var(--dm-radius); background: var(--bgColor-muted, #f6f8fa); color: var(--fgColor-default, var(--dm-card-fg)); font-size: 13px; }
 .dm-tree summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
 .dm-tree[open] summary { margin-bottom: 6px; }
 .dm-tree-list { max-height: 360px; overflow-y: auto; }

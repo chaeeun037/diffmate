@@ -1087,11 +1087,16 @@
       if (!info?.summary) { continue }
 
       // 파일 하나가 바뀌었다고 전체를 다시 그리면 화면이 통째로 깜빡인다.
-      // 그 파일의 내용과 붙을 자리가 그대로면 손대지 않는다.
-      const hasRows = (state.rows.get(path) || []).length > 0
-      const sig = `${JSON.stringify(info)}|${hasRows}`
+      // 그 파일의 내용과 붙을 자리가 그대로면 손대지 않는다. 자리는 줄 유무만으로 못 가른다 —
+      // 접힘(헤더 아래)과 큰 diff 자리표시는 둘 다 줄이 없어서, Viewed 를 풀면 헤더 아래 자리에 남아 자리표시 밑으로 갔다.
+      const firstRow = (state.rows.get(path) || [])[0]
+      const rowsTable = firstRow?.el?.isConnected && firstRow.el.tagName === 'TR' ? firstRow.el.parentElement : null
+      const body = rowsTable ? null : diffBody(block, blocks)
+      const mode = rowsTable ? 'rows' : (body ? 'body' : 'below')
+      const anchor = rowsTable || body || fileCard(block, blocks)
+      const sig = `${JSON.stringify(info)}|${mode}`
       const old = state.summaryByPath.get(path)
-      if (old && old.sig === sig && old.el.isConnected) {
+      if (old && old.sig === sig && old.anchor === anchor && old.el.isConnected) {
         keep.add(path)
         continue
       }
@@ -1124,8 +1129,7 @@
 
       // 헤더 옆에 붙이면 GitHub 의 붙박이 영역에 들어가 코드만 밑으로 흘러간다.
       // 코드 표의 첫 줄로 넣으면 구조상 붙박이가 될 수 없어 같이 스크롤된다.
-      const firstRow = (state.rows.get(path) || [])[0]
-      if (firstRow?.el?.isConnected && firstRow.el.tagName === 'TR') {
+      if (mode === 'rows') {
         const tr = document.createElement('tr')
         tr.className = 'dm-summary-row'
         const td = document.createElement('td')
@@ -1136,18 +1140,18 @@
         // 구간 머리말(@@ …) 도 표의 한 줄이다. 그 위, 표의 맨 첫 줄로 올린다.
         const firstTr = firstRow.el.parentElement?.firstElementChild || firstRow.el
         firstTr.insertAdjacentElement('beforebegin', tr)
-        state.summaryByPath.set(path, { el: banner, wrapper: tr, sig })
-      } else if (diffBody(block, blocks)) {
+        state.summaryByPath.set(path, { el: banner, wrapper: tr, sig, anchor })
+      } else if (mode === 'body') {
         // 큰 diff 는 표 대신 "Load Diff" 자리표시만 그린다. 파일 카드 뒤에 붙이면 파일 맨 아래로 가므로
-        // 본문 바로 앞(= 헤더 바로 아래)에 꽂는다. Load Diff 후 표로 바뀌면 hasRows 가 달라져 위 분기로 다시 그린다.
+        // 본문 바로 앞(= 헤더 바로 아래)에 꽂는다.
         const top = document.createElement('div')
         top.className = 'dm-summary-top'
         top.appendChild(banner)
-        diffBody(block, blocks).insertAdjacentElement('beforebegin', top)
-        state.summaryByPath.set(path, { el: banner, wrapper: top, sig })
+        body.insertAdjacentElement('beforebegin', top)
+        state.summaryByPath.set(path, { el: banner, wrapper: top, sig, anchor })
       } else {
         belowBar(path, block, blocks).appendChild(banner)
-        state.summaryByPath.set(path, { el: banner, sig })
+        state.summaryByPath.set(path, { el: banner, sig, anchor })
       }
       keep.add(path)
     }
@@ -1256,8 +1260,14 @@
     walk(root, 0)
     box.appendChild(list)
 
-    const anchor = document.querySelector('#files, .js-diff-progressive-container, main')
-    anchor?.prepend(box)
+    // main 맨 앞에 두면 PR 제목 위, 저장소 메뉴 바로 밑에 화면 가로 끝까지 붙어 메뉴 배경과 섞인다.
+    // 첫 파일 카드 바로 앞에 꽂아 파일 목록과 같은 폭·같은 흐름에 둔다.
+    const first = blocks.size ? fileCard(blocks.values().next().value, blocks) : null
+    if (first?.parentElement) {
+      first.insertAdjacentElement('beforebegin', box)
+      return
+    }
+    document.querySelector('#files, .js-diff-progressive-container, main')?.prepend(box)
   }
 
   function scrollToFile(path) {
