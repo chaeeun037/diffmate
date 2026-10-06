@@ -1,5 +1,7 @@
 # diffmate
 
+English · [한국어](docs/ko/README.md)
+
 **[See what it looks like →](https://chaeeun037.github.io/diffmate/)**
 
 Leave **private notes** on a GitHub pull request diff, and have an **AI agent answer them in place**.

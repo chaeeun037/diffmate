@@ -19,7 +19,7 @@ PY
 
 mkdir -p docs/img
 "$CHROME" --headless --disable-gpu --hide-scrollbars \
-  --force-device-scale-factor=2 --window-size=940,1100 \
+  --force-device-scale-factor=2 --window-size=940,1400 \
   --screenshot=docs/img/demo.png "file://$PWD/_shot.html" 2>/dev/null
 rm -f _shot.html
 echo "docs/img/demo.png"

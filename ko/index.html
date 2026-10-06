@@ -10,6 +10,13 @@
 <style>
   .badge-demo { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .badge-demo .dm-card { margin: 0; }
+  /* 실제 GitHub 본문은 흰 바탕이다. 트리의 muted 배경이 액자 바탕에 묻히지 않게 본문을 흰색으로 둔다 */
+  .browser-body { position: relative; background: #fff; padding-bottom: 64px; }
+  /* 확장의 상태 알약은 화면 오른쪽 아래 고정이다. 데모에서는 액자 안 오른쪽 아래에 둔다 */
+  .browser .dm-status { position: absolute; right: 16px; bottom: 14px; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .browser-body { background: #141413; }
+  }
 </style>
 </head>
 <body>
@@ -45,7 +52,7 @@
       <div class="dm-tree-dir" style="padding-left: 14px;">constants/</div>
       <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/constants/LogType.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">LogType.ts</span></button>
       <div class="dm-tree-dir" style="padding-left: 14px;">hooks/</div>
-      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span></button>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span><span class="dm-tree-count">메모 1</span></button>
       <div class="dm-tree-dir" style="padding-left: 14px;">lib/</div>
       <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/lib/retryFetch.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">retryFetch.ts</span><span class="dm-tree-count">메모 1</span></button>
     </div>
@@ -65,7 +72,7 @@
         <tr class="note-row"><td colspan="3">
           <div class="dm-card dm-inline dm-kind-question">
             <div class="dm-card-head">
-              <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+              <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
               <span class="dm-kind">질문</span><span class="dm-state dm-state-answered">답변됨</span><span>L14</span>
               <span class="dm-spacer"></span>
               <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
@@ -86,6 +93,17 @@
         <span class="dm-risk dm-risk-mid">◐ 보통</span>
         <span>로그인 상태 읽는 훅을 고쳤다. 첫 렌더에 값이 undefined라 그대로 분기하면 로그아웃 화면이 깜빡인다.</span>
       </div>
+      <div class="dm-file-notes">
+        <div class="dm-card dm-kind-question dm-resolved">
+          <div class="dm-card-head" style="cursor: pointer;">
+            <span class="dm-check">✓</span><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
+            <span class="dm-kind">질문</span><span>파일</span><span class="dm-spacer"></span>
+            <button type="button">수정</button><button type="button">삭제</button><button type="button">다시 열기</button>
+          </div>
+          <div class="dm-body">로그인 상태를 prop으로 안 내리고 훅에서 읽는 이유가 뭐야?</div>
+          <div class="dm-answer">다섯 화면이 읽는다. prop으로 내리면 중간 레이아웃마다 다 거쳐 가야 한다.</div>
+        </div>
+      </div>
     </div>
 
     <div class="file">
@@ -97,6 +115,7 @@
       </div>
     </div>
   </div>
+  <div class="dm-status"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg><span>메모 2 · 미답변 0 · 요약 4</span></div>
   </div>
 </div>
 
@@ -126,7 +145,7 @@
     <tr class="note-row"><td colspan="3">
       <div class="dm-card dm-inline dm-kind-question">
         <div class="dm-card-head">
-          <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+          <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
           <span class="dm-kind">질문</span><span class="dm-state dm-state-answered">답변됨</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">수정</button><button type="button">삭제</button><button type="button">완료</button>
@@ -149,13 +168,24 @@
 메모 개수가 붙고, 하위 폴더가 하나뿐인 폴더는 GitHub처럼 한 줄로 합친다. 파일을 누르면 그 자리로 간다.
 접어 두면 다음에 열어도 접혀 있다.</p>
 
+<details class="dm-tree" open>
+  <summary>바뀐 파일 3개</summary>
+  <div class="dm-tree-list">
+    <div class="dm-tree-dir" style="padding-left: 0px;">src/api/</div>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="src/api/client.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">client.ts</span><span class="dm-tree-count">메모 2</span></button>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="src/api/token.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">token.ts</span></button>
+    <div class="dm-tree-dir" style="padding-left: 0px;">tests/api/</div>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="tests/api/client.test.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">client.test.ts</span></button>
+  </div>
+</details>
+
 <p><b>종류와 답변 여부</b> — 카드마다 질문·요청·메모 중 뭔지 표시가 붙고, 질문과 요청에는 클로드가 답했는지도 붙는다.
 메모는 나만 보려고 남기는 거라 답변 표시가 없다.</p>
 
 <div class="badge-demo">
   <div class="dm-card dm-inline dm-kind-question">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">질문</span><span class="dm-state dm-state-open">미답변</span><span>L42</span>
       <span class="dm-spacer"></span>
     </div>
@@ -163,7 +193,7 @@
   </div>
   <div class="dm-card dm-inline dm-kind-request">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">요청</span><span class="dm-state dm-state-answered">답변됨</span><span>L18–24</span>
       <span class="dm-spacer"></span>
     </div>
@@ -171,7 +201,7 @@
   </div>
   <div class="dm-card dm-inline dm-kind-memo">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">메모</span><span>파일</span>
       <span class="dm-spacer"></span>
     </div>
@@ -198,9 +228,24 @@
 </ol>
 
 <footer>
-  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · 이슈는 한국어로 남겨도 된다.
+  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · 이슈 환영.
 </footer>
 
 </div>
+<script>
+  // 데모 트리: 누르면 같은 경로의 파일 카드로 스크롤하고 잠깐 강조한다. 확장의 scrollToFile 과 같은 동작.
+  document.querySelectorAll('.dm-tree-file').forEach((row) => {
+    row.addEventListener('click', () => {
+      const path = row.title
+      const head = [...document.querySelectorAll('.file-head')].find((h) => h.textContent.trim().endsWith(path))
+      const card = head?.closest('.file')
+      if (!card) { return }
+      card.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      card.style.transition = 'box-shadow .2s'
+      card.style.boxShadow = '0 0 0 2px var(--dm-accent)'
+      setTimeout(() => { card.style.boxShadow = '' }, 1200)
+    })
+  })
+</script>
 </body>
 </html>

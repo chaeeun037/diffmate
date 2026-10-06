@@ -13,6 +13,13 @@
   .dm-answer::before { content: 'Claude'; }
   .badge-demo { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .badge-demo .dm-card { margin: 0; }
+  /* 실제 GitHub 본문은 흰 바탕이다. 트리의 muted 배경이 액자 바탕에 묻히지 않게 본문을 흰색으로 둔다 */
+  .browser-body { position: relative; background: #fff; padding-bottom: 64px; }
+  /* 확장의 상태 알약은 화면 오른쪽 아래 고정이다. 데모에서는 액자 안 오른쪽 아래에 둔다 */
+  .browser .dm-status { position: absolute; right: 16px; bottom: 14px; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .browser-body { background: #141413; }
+  }
 </style>
 </head>
 <body>
@@ -35,7 +42,7 @@
     <span class="url">github.com/chaeeun037/diffmate/pull/12/changes</span>
     <span class="tools">
       <span class="puzzle" aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor"><path d="M6 1.5a1.75 1.75 0 0 1 3.5 0V2H11a1 1 0 0 1 1 1v1.5h.5a1.75 1.75 0 0 1 0 3.5H12V11a1 1 0 0 1-1 1H9.5v-.5a1.75 1.75 0 0 0-3.5 0v.5H4.5a1 1 0 0 1-1-1V9.5H3a1.75 1.75 0 0 1 0-3.5h.5V4.5a1 1 0 0 1 1-1H6z"/></svg></span>
-      <span class="pin" title="diffmate"><span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span></span>
+      <span class="pin" title="diffmate"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
     </span>
   </div>
   <div class="browser-body">
@@ -48,7 +55,7 @@
       <div class="dm-tree-dir" style="padding-left: 14px;">constants/</div>
       <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/constants/LogType.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">LogType.ts</span></button>
       <div class="dm-tree-dir" style="padding-left: 14px;">hooks/</div>
-      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span></button>
+      <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/hooks/useSession.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">useSession.ts</span><span class="dm-tree-count">1 note</span></button>
       <div class="dm-tree-dir" style="padding-left: 14px;">lib/</div>
       <button type="button" class="dm-tree-file" style="padding-left: 28px;" title="src/lib/retryFetch.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">retryFetch.ts</span><span class="dm-tree-count">1 note</span></button>
     </div>
@@ -68,7 +75,7 @@
         <tr class="note-row"><td colspan="3">
           <div class="dm-card dm-inline dm-kind-question">
             <div class="dm-card-head">
-              <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+              <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
               <span class="dm-kind">question</span><span class="dm-state dm-state-answered">answered</span><span>L14</span>
               <span class="dm-spacer"></span>
               <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
@@ -89,6 +96,17 @@
         <span class="dm-risk dm-risk-mid">◐ medium</span>
         <span>Reworked the hook that reads the session. The value is undefined on first render, so branching on it flashes the logged-out screen.</span>
       </div>
+      <div class="dm-file-notes">
+        <div class="dm-card dm-kind-question dm-resolved">
+          <div class="dm-card-head" style="cursor: pointer;">
+            <span class="dm-check">✓</span><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
+            <span class="dm-kind">question</span><span>file</span><span class="dm-spacer"></span>
+            <button type="button">edit</button><button type="button">delete</button><button type="button">reopen</button>
+          </div>
+          <div class="dm-body">Why read the session in a hook instead of passing it down as a prop?</div>
+          <div class="dm-answer">Five screens read it. Passing it down would thread it through every layout in between.</div>
+        </div>
+      </div>
     </div>
 
     <div class="file">
@@ -100,6 +118,7 @@
       </div>
     </div>
   </div>
+  <div class="dm-status"><svg viewBox="0 0 9 5" width="20" height="20" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg><span>notes 2 · unanswered 0 · summaries 4</span></div>
   </div>
 </div>
 
@@ -129,7 +148,7 @@ comment — this one is between you and Claude, and nobody else sees it.</p>
     <tr class="note-row"><td colspan="3">
       <div class="dm-card dm-inline dm-kind-question">
         <div class="dm-card-head">
-          <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+          <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
           <span class="dm-kind">question</span><span class="dm-state dm-state-answered">answered</span><span>L42</span>
           <span class="dm-spacer"></span>
           <button type="button">edit</button><button type="button">delete</button><button type="button">done</button>
@@ -148,17 +167,28 @@ comment — this one is between you and Claude, and nobody else sees it.</p>
   </table>
 </div>
 
-<p><b>Changed-files tree</b> — a tree of every changed file sits above the list, each with its risk marker
-(● high, ◐ medium, ○ skim) and how many notes it has. Folders with a single child fold into one row, the way
-GitHub does it. Click a file to jump to it. Fold the panel away and it stays folded next time.</p>
+<p><b>Changed-files tree</b> — every changed file shows up as a tree above the file list. Each file carries its risk marker
+(● high · ◐ medium · ○ skim) and its note count, and a folder with a single subfolder folds into one row, the way GitHub does it.
+Click a file to jump to it. Fold the panel away and it stays folded next time.</p>
 
-<p><b>Kinds and answers at a glance</b> — every card is badged with what it is (question, request, memo)
-and, for questions and requests, whether Claude has answered yet. Memos are just for you, so they get no answer badge.</p>
+<details class="dm-tree" open>
+  <summary>3 changed files</summary>
+  <div class="dm-tree-list">
+    <div class="dm-tree-dir" style="padding-left: 0px;">src/api/</div>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="src/api/client.ts"><span class="dm-risk dm-risk-high">●</span><span class="dm-tree-name">client.ts</span><span class="dm-tree-count">2 notes</span></button>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="src/api/token.ts"><span class="dm-risk dm-risk-mid">◐</span><span class="dm-tree-name">token.ts</span></button>
+    <div class="dm-tree-dir" style="padding-left: 0px;">tests/api/</div>
+    <button type="button" class="dm-tree-file" style="padding-left: 14px;" title="tests/api/client.test.ts"><span class="dm-risk dm-risk-low">○</span><span class="dm-tree-name">client.test.ts</span></button>
+  </div>
+</details>
+
+<p><b>Kinds and answers at a glance</b> — every card says whether it is a question, a request, or a memo, and questions
+and requests also say whether Claude has answered. Memos are just for you, so they get no answer badge.</p>
 
 <div class="badge-demo">
   <div class="dm-card dm-inline dm-kind-question">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">question</span><span class="dm-state dm-state-open">unanswered</span><span>L42</span>
       <span class="dm-spacer"></span>
     </div>
@@ -166,7 +196,7 @@ and, for questions and requests, whether Claude has answered yet. Memos are just
   </div>
   <div class="dm-card dm-inline dm-kind-request">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">request</span><span class="dm-state dm-state-answered">answered</span><span>L18–24</span>
       <span class="dm-spacer"></span>
     </div>
@@ -174,7 +204,7 @@ and, for questions and requests, whether Claude has answered yet. Memos are just
   </div>
   <div class="dm-card dm-inline dm-kind-memo">
     <div class="dm-card-head">
-      <span class="dm-logo-btn"><svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg></span>
+      <svg viewBox="0 0 9 5" width="16" height="16" shape-rendering="crispEdges" style="color:var(--dm-accent)" aria-hidden="true"><rect x="2" y="0" width="5" height="1" fill="currentColor"/><rect x="2" y="1" width="5" height="1" fill="currentColor"/><rect x="0" y="2" width="9" height="1" fill="currentColor"/><rect x="2" y="3" width="5" height="1" fill="currentColor"/><rect x="2" y="4" width="1" height="1" fill="currentColor"/><rect x="4" y="4" width="1" height="1" fill="currentColor"/><rect x="6" y="4" width="1" height="1" fill="currentColor"/><rect x="3" y="1" width="1" height="1" fill="#1b1b1b"/><rect x="5" y="1" width="1" height="1" fill="#1b1b1b"/></svg>
       <span class="dm-kind">memo</span><span>file</span>
       <span class="dm-spacer"></span>
     </div>
@@ -182,8 +212,8 @@ and, for questions and requests, whether Claude has answered yet. Memos are just
   </div>
 </div>
 
-<p><b>Jump between notes</b> — <code>⌥J</code> goes to the next note on the page and <code>⌥K</code> to the previous one.
-The card you land on flashes for a moment. While you are typing in a note the keys are left alone.</p>
+<p><b>Jump between notes</b> — <code>⌥J</code> goes to the next note and <code>⌥K</code> to the previous one. The card you land on
+flashes for a moment. While you are typing a note, the keys are left alone.</p>
 
 <h2>How it works</h2>
 <p>The extension never talks to Claude directly. A local file and your terminal sit in between.</p>
@@ -201,9 +231,24 @@ The card you land on flashes for a moment. While you are typing in a note the ke
 </ol>
 
 <footer>
-  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · Issues in Korean or English are both welcome.
+  MIT · <a href="https://github.com/chaeeun037/diffmate">github.com/chaeeun037/diffmate</a> · Issues welcome.
 </footer>
 
 </div>
+<script>
+  // 데모 트리: 누르면 같은 경로의 파일 카드로 스크롤하고 잠깐 강조한다. 확장의 scrollToFile 과 같은 동작.
+  document.querySelectorAll('.dm-tree-file').forEach((row) => {
+    row.addEventListener('click', () => {
+      const path = row.title
+      const head = [...document.querySelectorAll('.file-head')].find((h) => h.textContent.trim().endsWith(path))
+      const card = head?.closest('.file')
+      if (!card) { return }
+      card.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      card.style.transition = 'box-shadow .2s'
+      card.style.boxShadow = '0 0 0 2px var(--dm-accent)'
+      setTimeout(() => { card.style.boxShadow = '' }, 1200)
+    })
+  })
+</script>
 </body>
 </html>
