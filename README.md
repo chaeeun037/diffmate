@@ -45,6 +45,8 @@ Then in Chrome: `chrome://extensions` → enable Developer mode → **Load unpac
 
 Node 18+. No dependencies.
 
+**Update** — `git pull`, then hit the reload button on diffmate in `chrome://extensions`.
+
 ## Use
 
 **Leave a note** — hover a diff line; a button appears left of the line number. Click and type.
@@ -52,6 +54,10 @@ Node 18+. No dependencies.
 - `⌘Enter` to save, `Esc` to cancel
 - Three kinds: `question` (answer only), `request` (change the code), `memo` (agent leaves it alone)
 - Clicking the logo in a file's summary banner creates a **file-level note** that is not tied to any line
+- `⌥J` / `⌥K` jump to the next / previous note (ignored while typing)
+
+**See the whole PR at once** — a changed-files tree sits above the file list, with each file's risk
+(`●` high · `◐` mid · `○` low) and note count. Click a file to jump to it.
 
 **Get answers** — ask your agent to answer the notes. It reads and writes through the CLI:
 

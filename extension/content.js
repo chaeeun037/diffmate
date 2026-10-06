@@ -63,6 +63,12 @@
 
   const norm = (text) => String(text ?? '').replace(/\s+/g, ' ').trim()
 
+  // 파일에 단 메모는 line 이 null 이다. 그대로 찍으면 "Lnull" 이 된다.
+  const lineLabel = (line, endLine) => {
+    if (!line) { return '' }
+    return endLine && endLine !== line ? `L${line}–${endLine}` : `L${line}`
+  }
+
   async function sha256Hex(text) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
     return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
@@ -376,7 +382,7 @@
     select.innerHTML = '<option value="question">질문</option><option value="request">요청</option><option value="memo">메모</option>'
     head.appendChild(select)
     const where = document.createElement('span')
-    where.textContent = `${path.split('/').pop()} · L${row.line}`
+    where.textContent = `${path.split('/').pop()} · ${lineLabel(row.line) || '파일'}`
     head.appendChild(where)
 
     const ta = document.createElement('textarea')
@@ -660,7 +666,7 @@
   }
 
   function renderFileNotes(fileNotes, blocks) {
-    const sig = JSON.stringify([...fileNotes].map(([k, v]) => [k, (state.rows.get(k) || []).length > 0, v.map((n) => n.id + n.status + (n.thread?.length || 0) + (n.answer || '') + n.body)]))
+    const sig = JSON.stringify([...fileNotes].map(([k, v]) => [k, (state.rows.get(k) || []).length > 0, v.map((n) => JSON.stringify(n))]))
     const drawn = document.querySelectorAll('.dm-file-notes')
     if (sig === state.lastFileNoteSig && (drawn.length || !fileNotes.size)) { return }
     state.lastFileNoteSig = sig
@@ -688,7 +694,7 @@
   }
 
   function renderCollapsedBadges(collapsed, blocks) {
-    const sig = JSON.stringify([...collapsed].map(([k, v]) => [k, (state.rows.get(k) || []).length > 0, v.map((n) => n.id + n.status)]))
+    const sig = JSON.stringify([...collapsed].map(([k, v]) => [k, (state.rows.get(k) || []).length > 0, v.map((n) => JSON.stringify(n))]))
     const drawn = document.querySelectorAll('.dm-stack')
     if (sig === state.lastCollapsedSig && (drawn.length || !collapsed.size)) { return }
     state.lastCollapsedSig = sig
@@ -769,7 +775,7 @@
     const answered = lastSpeaker === 'claude'
 
     const el = document.createElement('div')
-    el.className = 'dm-card'
+    el.className = `dm-card dm-kind-${note.kind || 'question'}`
     el.addEventListener('keydown', (e) => e.stopPropagation())
 
     const head = document.createElement('div')
@@ -779,14 +785,21 @@
     kind.className = 'dm-kind'
     kind.textContent = { question: '질문', request: '요청', memo: '메모' }[note.kind] || note.kind
     head.appendChild(kind)
+    // 메모는 답을 기다리지 않는다. 질문·요청만 답이 왔는지 머리말에서 바로 보이게 한다.
+    if (note.kind !== 'memo' && note.status !== 'resolved') {
+      const st = document.createElement('span')
+      st.className = answered ? 'dm-state dm-state-answered' : 'dm-state dm-state-open'
+      st.textContent = answered ? '답변됨' : '미답변'
+      head.appendChild(st)
+    }
     const where = document.createElement('span')
-    where.textContent = row.line ? `L${row.line}` : '파일'
+    where.textContent = lineLabel(row.line, row.line === note.line ? note.endLine : null) || '파일'
     head.appendChild(where)
 
     if (note.drifted) {
       const drift = document.createElement('span')
       drift.className = 'dm-from-view'
-      drift.textContent = `L${note.line} 사라짐`
+      drift.textContent = `${lineLabel(note.line, note.endLine)} 사라짐`
       drift.title = '코드가 바뀌어 원래 줄이 없어졌다. 이 파일의 메모로 내려왔다'
       head.appendChild(drift)
     }
@@ -867,8 +880,9 @@
       el.appendChild(pending)
     }
 
+    let foot = null
     if (answered) {
-      const foot = document.createElement('div')
+      foot = document.createElement('div')
       foot.className = 'dm-actions dm-foot'
       foot.appendChild(button('답글', () => startReply()))
       el.appendChild(foot)
@@ -885,7 +899,7 @@
       hint.className = 'dm-hint'
       hint.textContent = '⌘Enter 저장'
 
-      const close = () => { ta.remove(); actions.remove() }
+      const close = () => { ta.remove(); actions.remove(); foot.hidden = false }
       const commit = async () => {
         const text = ta.value.trim()
         if (!text) { return }
@@ -899,6 +913,7 @@
       }
 
       actions.append(hint, button('취소', close), button('저장', commit, true))
+      foot.hidden = true
       el.append(ta, actions)
       ta.focus()
       ta.addEventListener('keydown', (e) => {
@@ -979,7 +994,7 @@
     for (const note of orphans) {
       const where = document.createElement('div')
       where.className = 'dm-orphan'
-      where.innerHTML = `<code>${note.path}${note.line ? `:${note.line}` : ''}</code>`
+      where.innerHTML = `<code>${note.path}${note.line ? `:${lineLabel(note.line, note.endLine).slice(1)}` : ''}</code>`
       box.appendChild(where)
 
       // 읽기만 되면 여기서 아무것도 못 한다. 카드로 그려서 수정·삭제·완료를 그 자리에서 하게 한다.
@@ -1047,6 +1062,15 @@
     )
   }
 
+  // 헤더 다음에 오는 diff 본문. 자리표시(HiddenDiffPatch)든 그려진 표든 data-diff-anchor 를 단다.
+  // 해시가 붙은 모듈 클래스는 배포마다 바뀌어 앞부분만 맞춘다.
+  function diffBody(block, blocks) {
+    const card = fileCard(block, blocks)
+    const body = card.querySelector('[data-diff-anchor], [class*="HiddenDiffPatch"]')
+    if (!body || stickyAncestor(body, card)) { return null }
+    return body
+  }
+
   function renderSummaries() {
     const blocks = fileBlocks()
     if (!state.summaryByPath) { state.summaryByPath = new Map() }
@@ -1090,7 +1114,7 @@
       if (info.risk) {
         const risk = document.createElement('span')
         risk.className = `dm-risk dm-risk-${info.risk}`
-        risk.textContent = { high: '● 중요', mid: '● 보통', low: '○ 훑기' }[info.risk] || ''
+        risk.textContent = { high: '● 중요', mid: '◐ 보통', low: '○ 훑기' }[info.risk] || ''
         banner.appendChild(risk)
       }
       const text = document.createElement('span')
@@ -1113,6 +1137,14 @@
         const firstTr = firstRow.el.parentElement?.firstElementChild || firstRow.el
         firstTr.insertAdjacentElement('beforebegin', tr)
         state.summaryByPath.set(path, { el: banner, wrapper: tr, sig })
+      } else if (diffBody(block, blocks)) {
+        // 큰 diff 는 표 대신 "Load Diff" 자리표시만 그린다. 파일 카드 뒤에 붙이면 파일 맨 아래로 가므로
+        // 본문 바로 앞(= 헤더 바로 아래)에 꽂는다. Load Diff 후 표로 바뀌면 hasRows 가 달라져 위 분기로 다시 그린다.
+        const top = document.createElement('div')
+        top.className = 'dm-summary-top'
+        top.appendChild(banner)
+        diffBody(block, blocks).insertAdjacentElement('beforebegin', top)
+        state.summaryByPath.set(path, { el: banner, wrapper: top, sig })
       } else {
         belowBar(path, block, blocks).appendChild(banner)
         state.summaryByPath.set(path, { el: banner, sig })
@@ -1132,6 +1164,155 @@
     old.wrapper?.remove()
     document.querySelector(`.dm-below[data-dm-path="${CSS.escape(path)}"]`)?.remove()
     state.summaryByPath.delete(path)
+  }
+
+  // ── 바뀐 파일 트리 ─────────────────────────────────────
+  const TREE_KEY = 'diffmate.tree.collapsed'
+
+  function renderTree() {
+    const blocks = fileBlocks()
+    const files = new Map(Object.entries(state.data.files || {}).map(([k, v]) => [normPath(k), v]))
+    const counts = new Map()
+    for (const n of state.data.notes) {
+      const p = normPath(n.path)
+      counts.set(p, (counts.get(p) || 0) + 1)
+    }
+    const paths = [...new Set([...files.keys(), ...blocks.keys(), ...counts.keys()])].sort()
+
+    const sig = JSON.stringify(paths.map((p) => [p, files.get(p)?.risk || '', counts.get(p) || 0]))
+    const prev = document.querySelector('.dm-tree')
+    if (sig === state.lastTreeSig && prev?.isConnected) { return }
+    state.lastTreeSig = sig
+    prev?.remove()
+    if (!paths.length) { return }
+
+    // 한 갈래뿐인 폴더는 GitHub 트리처럼 a/b/c 로 합쳐야 깊이가 덜 쌓인다.
+    const root = { dirs: new Map(), files: [] }
+    for (const path of paths) {
+      const parts = path.split('/')
+      let node = root
+      for (const dir of parts.slice(0, -1)) {
+        if (!node.dirs.has(dir)) { node.dirs.set(dir, { dirs: new Map(), files: [] }) }
+        node = node.dirs.get(dir)
+      }
+      node.files.push(path)
+    }
+
+    const box = document.createElement('details')
+    box.className = 'dm-tree'
+    let collapsed = false
+    try { collapsed = localStorage.getItem(TREE_KEY) === '1' } catch {}
+    box.open = !collapsed
+    box.addEventListener('toggle', () => {
+      try { localStorage.setItem(TREE_KEY, box.open ? '0' : '1') } catch {}
+    })
+    const h = document.createElement('summary')
+    h.textContent = `바뀐 파일 ${paths.length}개`
+    box.appendChild(h)
+
+    const list = document.createElement('div')
+    list.className = 'dm-tree-list'
+    const walk = (node, depth) => {
+      for (const [name, child] of [...node.dirs].sort(([a], [b]) => a.localeCompare(b))) {
+        let label = name
+        let cur = child
+        while (cur.dirs.size === 1 && !cur.files.length) {
+          const [[nextName, next]] = cur.dirs
+          label += `/${nextName}`
+          cur = next
+        }
+        const dir = document.createElement('div')
+        dir.className = 'dm-tree-dir'
+        dir.style.paddingLeft = `${depth * 14}px`
+        dir.textContent = `${label}/`
+        list.appendChild(dir)
+        walk(cur, depth + 1)
+      }
+      for (const path of node.files) {
+        const row = document.createElement('button')
+        row.type = 'button'
+        row.className = 'dm-tree-file'
+        row.style.paddingLeft = `${depth * 14}px`
+        row.title = path
+        const risk = files.get(path)?.risk
+        const mark = document.createElement('span')
+        mark.className = risk ? `dm-risk dm-risk-${risk}` : 'dm-risk dm-risk-none'
+        mark.textContent = { high: '●', mid: '◐', low: '○' }[risk] || '·'
+        const name = document.createElement('span')
+        name.className = 'dm-tree-name'
+        name.textContent = path.split('/').pop()
+        row.append(mark, name)
+        const count = counts.get(path) || 0
+        if (count) {
+          const c = document.createElement('span')
+          c.className = 'dm-tree-count'
+          c.textContent = `메모 ${count}`
+          row.appendChild(c)
+        }
+        row.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); scrollToFile(path) })
+        list.appendChild(row)
+      }
+    }
+    walk(root, 0)
+    box.appendChild(list)
+
+    const anchor = document.querySelector('#files, .js-diff-progressive-container, main')
+    anchor?.prepend(box)
+  }
+
+  function scrollToFile(path) {
+    const blocks = fileBlocks(true)
+    const block = blocks.get(path)
+    // GitHub 은 아래쪽 파일을 스크롤할 때 붙인다. 블록이 아직 없어도 diff-<sha256> 자리는 먼저 있을 수 있다.
+    const hashId = [...state.pathOfHash].find(([, p]) => p === path)?.[0]
+    const target = block ? fileCard(block, blocks) : (hashId && document.getElementById(`diff-${hashId}`))
+    if (!target) { flashStatus('아직 화면에 안 붙은 파일 — 조금 내려서 다시'); return }
+    target.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  }
+
+  // ── 메모 사이 이동 (Option+J/K) ───────────────────────────
+  function attachNavKeys() {
+    window.addEventListener('keydown', (e) => {
+      if (!state.ctx || !e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) { return }
+      // Alt+↑/↓ 는 맥 크롬이 페이지 스크롤로 먼저 먹는다. 맥은 Option 조합에서 e.key 가 ∆·˚ 로 바뀌어 code 로 본다.
+      if (e.code !== 'KeyJ' && e.code !== 'KeyK') { return }
+      const t = e.target
+      if (t?.closest?.('textarea, input, select, [contenteditable=""], [contenteditable="true"]')) { return }
+
+      // 레일 카드는 body 끝에 붙어 DOM 순서가 화면 순서와 다르다. 화면 위치로 줄 세운다.
+      const cards = [...document.querySelectorAll('.dm-card:not(.dm-composer)')]
+        .filter((el) => el.getClientRects().length)
+        .map((el) => ({ el, top: el.getBoundingClientRect().top }))
+        .sort((a, b) => a.top - b.top)
+      if (!cards.length) { return }
+      e.preventDefault()
+      e.stopPropagation()
+
+      const down = e.code === 'KeyJ'
+      const at = cards.findIndex((c) => c.el === state.navEl)
+      let next
+      if (at >= 0) {
+        next = cards[Math.min(cards.length - 1, Math.max(0, at + (down ? 1 : -1)))]
+      } else {
+        next = down ? (cards.find((c) => c.top > 1) || cards[cards.length - 1]) : ([...cards].reverse().find((c) => c.top < -1) || cards[0])
+      }
+      focusCard(next.el)
+    }, true)
+  }
+
+  function focusCard(el) {
+    state.navEl = el
+    // 레일 카드는 position: fixed 라 카드 자체를 스크롤하면 안 움직인다. 붙은 줄을 스크롤한다.
+    const entry = [...(state.cardByNote?.values() || [])].find((c) => c.el === el && !c.wrapper)
+    const target = entry?.rowEl?.isConnected ? entry.rowEl : el
+    target.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    el.tabIndex = -1
+    el.focus({ preventScroll: true })
+    el.classList.remove('dm-nav-focus')
+    void el.offsetWidth
+    el.classList.add('dm-nav-focus')
+    clearTimeout(el._dmNavTimer)
+    el._dmNavTimer = setTimeout(() => el.classList.remove('dm-nav-focus'), 1200)
   }
 
   // ── 상태 표시 ──────────────────────────────────────────
@@ -1188,6 +1369,7 @@
     scan()
     renderSummaries()
     renderCards()
+    renderTree()
     renderStatus()
   }
 
@@ -1255,6 +1437,7 @@
     activated = true
 
     attachHover()
+    attachNavKeys()
 
     let ticking = false
     const onMove = () => {

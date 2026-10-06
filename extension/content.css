@@ -112,7 +112,31 @@ html[data-color-mode='dark'] {
   font-size: 12px;
   color: var(--dm-muted);
 }
-.dm-kind { font-weight: 600; color: var(--dm-accent); }
+.dm-kind {
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--dm-accent);
+  background: var(--dm-accent-soft);
+}
+/* 종류별 색은 GitHub 토큰을 빌린다. 라이트·다크를 GitHub 이 알아서 바꿔준다. 뒤 값은 토큰이 없을 때만 쓰인다 */
+.dm-kind-question .dm-kind { color: var(--fgColor-accent, #0969da); background: var(--bgColor-accent-muted, rgba(84, 174, 255, 0.15)); }
+.dm-kind-request .dm-kind { color: var(--fgColor-attention, #9a6700); background: var(--bgColor-attention-muted, rgba(212, 167, 44, 0.15)); }
+.dm-kind-memo .dm-kind { color: var(--fgColor-muted, #59636e); background: var(--bgColor-neutral-muted, rgba(175, 184, 193, 0.2)); }
+.dm-state {
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 16px;
+}
+.dm-state-open { color: var(--fgColor-attention, #9a6700); }
+.dm-state-answered { color: var(--fgColor-success, #1a7f37); }
+/* Alt+↑/↓ 로 옮겨온 카드 */
+.dm-card:focus { outline: none; }
+.dm-card.dm-nav-focus, .dm-card.dm-resolved.dm-nav-focus { opacity: 1; box-shadow: 0 0 0 2px var(--fgColor-accent, #0969da); transition: box-shadow 0.2s ease; }
 .dm-card-head .dm-spacer { flex: 1; }
 .dm-card-head button {
   border: 0;
@@ -224,7 +248,7 @@ html[data-color-mode='dark'] {
 .dm-file-summary > span:last-child { white-space: pre-line; }
 .dm-risk { flex: none; font-size: 13px; font-weight: 600; margin-right: 10px; }
 .dm-risk-high { color: var(--dm-danger); }
-.dm-risk-mid { color: var(--dm-accent-hover); }
+.dm-risk-mid { color: var(--fgColor-attention, #9a6700); }
 .dm-risk-low { color: var(--dm-muted); }
 
 /* ── 상단 상태 바 ──────────────────────────────────────── */
@@ -366,3 +390,37 @@ html[data-color-mode='dark'] {
 /* 떠돌이 패널 안 카드 */
 .dm-orphans .dm-card { position: static; width: auto; max-width: var(--dm-card-max); margin: 4px 0 12px; }
 .dm-orphans .dm-orphan { margin-top: 8px; }
+
+/* 큰 diff 자리표시 위, 헤더 바로 아래에 붙는 요약. 부모가 flex 여도 order 를 안 타게 감싼다 */
+.dm-summary-top { display: block; width: 100%; }
+
+/* 바뀐 파일 트리 */
+.dm-tree { margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--borderColor-default, var(--dm-card-border)); border-radius: var(--dm-radius); background: var(--bgColor-muted, #f6f8fa); color: var(--fgColor-default, var(--dm-card-fg)); font-size: 13px; }
+.dm-tree summary { cursor: pointer; font-weight: 600; list-style-position: inside; }
+.dm-tree[open] summary { margin-bottom: 6px; }
+.dm-tree-list { max-height: 360px; overflow-y: auto; }
+.dm-tree-dir { padding-top: 2px; padding-bottom: 2px; color: var(--fgColor-muted, var(--dm-muted)); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+.dm-tree-file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dm-tree-file:hover { background: var(--bgColor-neutral-muted, rgba(175, 184, 193, 0.2)); }
+.dm-tree-file .dm-risk { margin-right: 0; width: 1em; text-align: center; }
+.dm-risk-none { color: var(--fgColor-muted, var(--dm-muted)); }
+.dm-tree-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dm-tree-count { margin-left: auto; padding-right: 6px; font-size: 11px; color: var(--fgColor-muted, var(--dm-muted)); white-space: nowrap; }
+
+/* .dm-actions 의 display:flex 가 hidden 속성을 이겨서 답글 버튼이 안 숨는다 */
+.dm-foot[hidden] { display: none; }
