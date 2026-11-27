@@ -140,18 +140,24 @@
       byPath.get(path).push(el)
     }
 
+    // querySelectorAll 은 문서 순서라 한 요소의 자손 후보는 바로 뒤에 이어 붙는다.
+    // "안에 다른 후보가 있나"는 다음 후보 하나만 보면 되고, 서로 다 견주면 후보 수의 제곱이 된다.
+    const attrPaths = nodes.map(attrPath)
+    const holdsNext = (i) => i + 1 < nodes.length && nodes[i].contains(nodes[i + 1])
+
     const rest = []
-    for (const el of nodes) {
-      const p = attrPath(el) || state.pathOfHash.get(String(el.id).match(/^diff-([0-9a-f]{64})$/)?.[1])
-      if (p) { push(normPath(p), el) } else { rest.push(el) }
-    }
+    nodes.forEach((el, i) => {
+      const p = attrPaths[i] || state.pathOfHash.get(String(el.id).match(/^diff-([0-9a-f]{64})$/)?.[1])
+      if (p) { push(normPath(p), el) } else { rest.push(i) }
+    })
 
     // 텍스트로 경로를 긁는 건 마지막 수단이다. 다른 후보를 품은 조상에 쓰면 목록 전체가
     // 그 파일로 잡혀서 남의 파일 줄에 메모가 붙는다(2026-09-21 AdBanner 메모가 loadTiming 에).
-    for (const el of rest) {
-      if (nodes.some((other) => other !== el && el.contains(other))) { continue }
-      push(textPath(el), el)
+    for (const i of rest) {
+      if (holdsNext(i)) { continue }
+      push(textPath(nodes[i]), nodes[i])
     }
+    const indexOf = new Map(nodes.map((el, i) => [el, i]))
 
     const found = new Map()
     for (const [path, list] of byPath) {
@@ -163,11 +169,18 @@
       }
 
       // 고른 게 헤더만 담은 작은 요소면 줄이 하나도 안 잡힌다. 다른 파일을 품기 직전까지 올라간다.
+      // 조상이 품는 후보는 문서 순서로 이어진 구간이라, 올라갈 때마다 구간 양 끝만 넓혀 본다.
       if (!best.querySelector(ROW_SEL)) {
+        let lo = indexOf.get(best)
+        let hi = lo
+        while (hi + 1 < nodes.length && best.contains(nodes[hi + 1])) { hi++ }
         let cur = best
         while (cur.parentElement && cur.parentElement !== document.body) {
           const parent = cur.parentElement
-          if (nodes.some((other) => !best.contains(other) && parent.contains(other) && attrPath(other) !== path)) { break }
+          let foreign = false
+          while (!foreign && lo > 0 && parent.contains(nodes[lo - 1])) { lo--; foreign = attrPaths[lo] !== path }
+          while (!foreign && hi + 1 < nodes.length && parent.contains(nodes[hi + 1])) { hi++; foreign = attrPaths[hi] !== path }
+          if (foreign) { break }
           cur = parent
           if (cur.querySelector(ROW_SEL)) { best = cur; break }
         }
@@ -176,10 +189,11 @@
     }
 
     // 안전장치 — 다른 파일 블록을 품고 있으면 그건 파일 블록이 아니다.
+    const ordered = [...new Set(found.values())]
+      .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
+    const holders = new Set(ordered.filter((el, i) => i + 1 < ordered.length && el.contains(ordered[i + 1])))
     for (const [path, el] of [...found]) {
-      for (const [other, otherEl] of found) {
-        if (other !== path && el !== otherEl && el.contains(otherEl)) { found.delete(path); break }
-      }
+      if (holders.has(el)) { found.delete(path) }
     }
     state.blocksCache = found
     return found
@@ -1012,16 +1026,30 @@
   // ── 파일 요약 배너 ─────────────────────────────────────
   // 접힌 파일은 블록이 헤더 줄 자체로 잡힌다. 그 안에 전체 폭 요소를 꽂으면 파일명이 밀려난다.
   // 그 파일만 담은 가장 바깥 요소까지 올라가서 그 아래에 붙인다.
+  // 조상마다 "어느 블록을 품었나"를 한 번만 적어 두면, 카드를 찾을 때 블록 전체를 다시 견주지 않아도 된다.
+  const SHARED = Symbol('shared')
+  const ownersOf = new WeakMap()
+  function blockOwners(blocks) {
+    if (ownersOf.has(blocks)) { return ownersOf.get(blocks) }
+    const owners = new Map()
+    for (const block of new Set(blocks.values())) {
+      for (let cur = block; cur && cur !== document.body; cur = cur.parentElement) {
+        const owner = owners.get(cur)
+        if (owner === SHARED) { break }
+        owners.set(cur, owner && owner !== block ? SHARED : block)
+      }
+    }
+    ownersOf.set(blocks, owners)
+    return owners
+  }
+
   function fileCard(el, blocks) {
+    const owners = blockOwners(blocks)
     let cur = el
     while (cur.parentElement && cur.parentElement !== document.body) {
-      const parent = cur.parentElement
-      let hasOther = false
-      for (const other of blocks.values()) {
-        if (other !== el && parent.contains(other)) { hasOther = true; break }
-      }
-      if (hasOther) { break }
-      cur = parent
+      const owner = owners.get(cur.parentElement)
+      if (owner && owner !== el) { break }
+      cur = cur.parentElement
     }
     return cur
   }
