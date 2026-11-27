@@ -1172,6 +1172,7 @@
 
   // ── 바뀐 파일 트리 ─────────────────────────────────────
   const TREE_KEY = 'diffmate.tree.collapsed'
+  const DIRS_KEY = 'diffmate.tree.closedDirs'
 
   function renderTree() {
     const blocks = fileBlocks()
@@ -1214,9 +1215,27 @@
     h.textContent = `바뀐 파일 ${paths.length}개`
     box.appendChild(h)
 
+    const dirsKey = `${DIRS_KEY}.${state.ctx.repo}#${state.ctx.pr}`
+    let closedDirs = new Set()
+    try { closedDirs = new Set(JSON.parse(localStorage.getItem(dirsKey) || '[]')) } catch {}
+    const saveClosedDirs = () => {
+      try { localStorage.setItem(dirsKey, JSON.stringify([...closedDirs])) } catch {}
+    }
+
+    const tally = (node) => {
+      let fileCount = node.files.length
+      let noteCount = node.files.reduce((sum, p) => sum + (counts.get(p) || 0), 0)
+      for (const child of node.dirs.values()) {
+        const sub = tally(child)
+        fileCount += sub.fileCount
+        noteCount += sub.noteCount
+      }
+      return { fileCount, noteCount }
+    }
+
     const list = document.createElement('div')
     list.className = 'dm-tree-list'
-    const walk = (node, depth) => {
+    const walk = (node, depth, parentEl, prefix) => {
       for (const [name, child] of [...node.dirs].sort(([a], [b]) => a.localeCompare(b))) {
         let label = name
         let cur = child
@@ -1225,12 +1244,41 @@
           label += `/${nextName}`
           cur = next
         }
-        const dir = document.createElement('div')
+        const dirPath = `${prefix}${label}/`
+        const dir = document.createElement('button')
+        dir.type = 'button'
         dir.className = 'dm-tree-dir'
         dir.style.paddingLeft = `${depth * 14}px`
-        dir.textContent = `${label}/`
-        list.appendChild(dir)
-        walk(cur, depth + 1)
+        dir.title = dirPath
+        const caret = document.createElement('span')
+        caret.className = 'dm-tree-caret'
+        const dirName = document.createElement('span')
+        dirName.className = 'dm-tree-name'
+        dirName.textContent = `${label}/`
+        const { fileCount, noteCount } = tally(cur)
+        const summary = document.createElement('span')
+        summary.className = 'dm-tree-count'
+        summary.textContent = noteCount ? `파일 ${fileCount} · 메모 ${noteCount}` : `파일 ${fileCount}`
+        dir.append(caret, dirName, summary)
+
+        const group = document.createElement('div')
+        group.className = 'dm-tree-group'
+        const apply = () => {
+          const closed = closedDirs.has(dirPath)
+          group.hidden = closed
+          summary.hidden = !closed
+          caret.textContent = closed ? '▸' : '▾'
+          dir.setAttribute('aria-expanded', String(!closed))
+        }
+        apply()
+        dir.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation()
+          if (closedDirs.has(dirPath)) { closedDirs.delete(dirPath) } else { closedDirs.add(dirPath) }
+          saveClosedDirs()
+          apply()
+        })
+        parentEl.append(dir, group)
+        walk(cur, depth + 1, group, dirPath)
       }
       for (const path of node.files) {
         const row = document.createElement('button')
@@ -1254,10 +1302,10 @@
           row.appendChild(c)
         }
         row.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); scrollToFile(path) })
-        list.appendChild(row)
+        parentEl.appendChild(row)
       }
     }
-    walk(root, 0)
+    walk(root, 0, list, '')
     box.appendChild(list)
 
     // main 맨 앞에 두면 PR 제목 위, 저장소 메뉴 바로 밑에 화면 가로 끝까지 붙어 메뉴 배경과 섞인다.
