@@ -1325,7 +1325,50 @@
     const hashId = [...state.pathOfHash].find(([, p]) => p === path)?.[0]
     const target = block ? fileCard(block, blocks) : (hashId && document.getElementById(`diff-${hashId}`))
     if (!target) { flashStatus('아직 화면에 안 붙은 파일 — 조금 내려서 다시'); return }
-    target.scrollIntoView({ block: 'start', behavior: 'smooth' })
+
+    const scroller = scrollParent(target)
+    const viewTop = scroller === document.scrollingElement ? 0 : scroller.getBoundingClientRect().top
+    // 위에 붙은 머리 높이는 그 자리에 가 봐야 안다(PR 제목 줄은 내려가야 붙는다). 먼저 가고 멈춘 뒤 한 번 더 맞춘다.
+    const offsetNow = () => target.getBoundingClientRect().top - coveredBottom(target, viewTop) - 8
+    scroller.scrollBy({ top: offsetNow(), behavior: 'smooth' })
+
+    let settled = false
+    const settle = () => {
+      if (settled) { return }
+      settled = true
+      const delta = offsetNow()
+      if (Math.abs(delta) > 2) { scroller.scrollBy({ top: delta }) }
+    }
+    const eventTarget = scroller === document.scrollingElement ? window : scroller
+    eventTarget.addEventListener('scrollend', settle, { once: true })
+    setTimeout(settle, 1200)
+  }
+
+  function scrollParent(el) {
+    for (let cur = el.parentElement; cur && cur !== document.body; cur = cur.parentElement) {
+      const { overflowY } = getComputedStyle(cur)
+      if ((overflowY === 'auto' || overflowY === 'scroll') && cur.scrollHeight > cur.clientHeight) { return cur }
+    }
+    return document.scrollingElement
+  }
+
+  // 화면 위쪽을 가리는 sticky·fixed 머리의 아래 끝. 대상 파일 자기 머리는 빼야 대상이 가려졌다고 안 본다.
+  function coveredBottom(target, viewTop) {
+    const rect = target.getBoundingClientRect()
+    const x = Math.min(Math.max(rect.left + 40, 0), window.innerWidth - 1)
+    let y = Math.max(viewTop, 0)
+    for (let i = 0; i < 5; i++) {
+      let cover = null
+      for (let cur = document.elementFromPoint(x, y + 1); cur && cur !== document.body; cur = cur.parentElement) {
+        if (target.contains(cur) || cur.className?.toString().includes('dm-')) { break }
+        const { position } = getComputedStyle(cur)
+        if (position === 'sticky' || position === 'fixed') { cover = cur; break }
+      }
+      const bottom = cover?.getBoundingClientRect().bottom
+      if (!bottom || bottom <= y) { break }
+      y = bottom
+    }
+    return y
   }
 
   // ── 메모 사이 이동 (Option+J/K) ───────────────────────────
